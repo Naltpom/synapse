@@ -147,7 +147,7 @@ final class AppFixtures extends Fixture
             ['Durcissement Microsoft 365', Practice::SecuriteOperationnelle, 41000],
             ['Sécurisation Active Directory', Practice::SecuriteOperationnelle, 62000],
             ['Audit de configuration cloud', Practice::AuditSsi, 28000],
-            ['Programme de sensibilisation phishing', Practice::Grc, 18000],
+            ['Programme de sensibilisation phishing', Practice::Formation, 18000],
             ['Supervision EDR managée', Practice::Cyberdefense, 110000],
         ];
 
@@ -188,6 +188,7 @@ final class AppFixtures extends Fixture
             Practice::Grc->value => ['EBIOS RM', 'ISO 27001', 'NIS2', 'DORA', 'PSSI', 'Audit organisationnel'],
             Practice::IdentiteNumerique->value => ['Okta', 'Sailpoint', 'CyberArk', 'Entra ID', 'Keycloak', 'MFA'],
             Practice::SecuriteOperationnelle->value => ['PKI', 'Microsoft 365', 'Active Directory', 'Durcissement', 'Zscaler', 'Intune'],
+            Practice::Formation->value => ['Sensibilisation', 'Ingénierie pédagogique', 'Phishing simulé', 'Serious game'],
         ];
 
         $distribution = [
@@ -196,6 +197,7 @@ final class AppFixtures extends Fixture
             [Practice::Grc, 5],
             [Practice::IdentiteNumerique, 6],
             [Practice::SecuriteOperationnelle, 4],
+            [Practice::Formation, 2],
         ];
 
         $grades = [
@@ -301,8 +303,13 @@ final class AppFixtures extends Fixture
      */
     private function loadAssignments(ObjectManager $manager, array $missions, array $consultants): void
     {
-        // ~85 % de staffing : les 4 derniers consultants restent volontairement en intercontrat.
-        $staffable = array_slice($consultants, 0, count($consultants) - 4);
+        // ~85 % de staffing : 4 consultants répartis sur les practices restent en intercontrat.
+        $benchIndexes = [3, 9, 15, 21];
+        $staffable = array_values(array_filter(
+            $consultants,
+            static fn (Consultant $c, int $i): bool => !in_array($i, $benchIndexes, true),
+            ARRAY_FILTER_USE_BOTH,
+        ));
 
         $activeMissions = array_values(array_filter(
             $missions,

@@ -7,6 +7,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Objectif annuel de CA affiché dans le héro du dashboard (valeur de démonstration).
+    app.dashboard_annual_target: 2500000
 
 services:
     # default configuration for services in *this* file

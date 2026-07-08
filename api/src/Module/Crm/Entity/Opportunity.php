@@ -106,6 +106,11 @@ class Opportunity
         return $this->probability;
     }
 
+    public function getExpectedCloseAt(): \DateTimeImmutable
+    {
+        return $this->expectedCloseAt;
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {

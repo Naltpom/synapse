@@ -14,6 +14,7 @@ enum Practice: string
     case Grc = 'grc';
     case IdentiteNumerique = 'identite_numerique';
     case SecuriteOperationnelle = 'securite_operationnelle';
+    case Formation = 'formation';
 
     public function label(): string
     {
@@ -23,6 +24,7 @@ enum Practice: string
             self::Grc => 'GRC',
             self::IdentiteNumerique => 'Identité Numérique',
             self::SecuriteOperationnelle => 'Sécurité Opérationnelle',
+            self::Formation => 'Formation',
         };
     }
 }
