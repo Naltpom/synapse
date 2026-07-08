@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Module\Crm\Controller;
 
+use App\Module\Billing\Entity\Invoice;
+use App\Module\Billing\Enum\InvoiceStatus;
 use App\Module\Core\Enum\Practice;
 use App\Module\Crm\Entity\Client;
 use App\Module\Crm\Entity\Contact;
 use App\Module\Crm\Entity\Opportunity;
 use App\Module\Crm\Enum\ClientStatus;
 use App\Module\Crm\Enum\OpportunityStage;
+use App\Module\Staffing\Entity\Mission;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,6 +57,66 @@ final class CrmController extends AbstractController
         $data = $this->serializeClient($client);
         $data['contacts'] = array_map(static fn (Contact $c): array => $c->toArray(), $client->getContacts()->toArray());
         $data['opportunities'] = array_map(static fn (Opportunity $o): array => $o->toArray(), $client->getOpportunities()->toArray());
+
+        return $this->json($data);
+    }
+
+    /**
+     * Vue 360° d'un client : ses données CRM et, en lecture transverse par identifiant,
+     * ses missions (Staffing) et ses factures (Billing) — même pattern que le dashboard.
+     */
+    #[Route('/clients/{id}/overview', name: 'crm_clients_overview', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function overview(int $id): JsonResponse
+    {
+        $client = $this->em->find(Client::class, $id);
+        if (null === $client) {
+            return $this->json(['error' => 'Client introuvable.'], 404);
+        }
+
+        /** @var list<Mission> $missions */
+        $missions = $this->em->createQueryBuilder()
+            ->select('m', 'a')
+            ->from(Mission::class, 'm')
+            ->leftJoin('m.assignments', 'a')
+            ->where('m.clientId = :id')->setParameter('id', $id)
+            ->orderBy('m.startDate', 'DESC')
+            ->getQuery()->getResult();
+
+        /** @var list<Invoice> $invoices */
+        $invoices = $this->em->createQueryBuilder()
+            ->select('i')
+            ->from(Invoice::class, 'i')
+            ->where('i.clientId = :id')->setParameter('id', $id)
+            ->orderBy('i.issuedAt', 'DESC')
+            ->getQuery()->getResult();
+
+        $billed = 0.0;
+        $paid = 0.0;
+        $overdue = 0.0;
+        foreach ($invoices as $invoice) {
+            $amount = (float) $invoice->getAmountHt();
+            if (InvoiceStatus::Brouillon !== $invoice->getStatus()) {
+                $billed += $amount;
+            }
+            if (InvoiceStatus::Payee === $invoice->getStatus()) {
+                $paid += $amount;
+            }
+            if (InvoiceStatus::EnRetard === $invoice->getStatus()) {
+                $overdue += $amount;
+            }
+        }
+
+        $data = $this->serializeClient($client);
+        $data['contacts'] = array_map(static fn (Contact $c): array => $c->toArray(), $client->getContacts()->toArray());
+        $data['opportunities'] = array_map(static fn (Opportunity $o): array => $o->toArray(), $client->getOpportunities()->toArray());
+        $data['missions'] = array_map(static fn (Mission $m): array => $m->toArray(), $missions);
+        $data['invoices'] = array_map(static fn (Invoice $i): array => $i->toArray(), $invoices);
+        $data['kpis'] = [
+            'billedTotal' => round($billed, 2),
+            'paidTotal' => round($paid, 2),
+            'overdueAmount' => round($overdue, 2),
+            'activeMissions' => count(array_filter($missions, static fn (Mission $m): bool => 'en_cours' === $m->getStatus()->value)),
+        ];
 
         return $this->json($data);
     }

@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { api, ApiError } from '@/lib/api'
-import { euro, date } from '@/lib/format'
+import { euro } from '@/lib/format'
 import StatusBadge from '@/components/StatusBadge.vue'
+
+const router = useRouter()
 
 interface ClientRow {
   id: number
@@ -14,11 +17,6 @@ interface ClientRow {
   contactCount: number
   opportunityCount: number
   weightedPipeline: number
-}
-
-interface ClientDetail extends ClientRow {
-  contacts: { id: number; firstName: string; lastName: string; role: string; email: string; phone: string | null }[]
-  opportunities: Opportunity[]
 }
 
 interface Opportunity {
@@ -38,7 +36,6 @@ const tab = ref<'clients' | 'opportunities'>('clients')
 const clients = ref<ClientRow[]>([])
 const opportunities = ref<Opportunity[]>([])
 const search = ref('')
-const selected = ref<ClientDetail | null>(null)
 
 const showCreate = ref(false)
 const form = ref({ name: '', sector: '', city: '', status: 'prospect' })
@@ -58,8 +55,8 @@ async function reload() {
 
 onMounted(reload)
 
-async function openClient(id: number) {
-  selected.value = await api.get<ClientDetail>(`/api/crm/clients/${id}`)
+function openClient(id: number) {
+  router.push({ name: 'client', params: { id } })
 }
 
 async function createClient() {
@@ -180,38 +177,6 @@ async function changeStage(opportunity: Opportunity, stage: string) {
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- Volet client -->
-    <div v-if="selected" class="fixed inset-0 z-20 flex justify-end bg-ink/30" @click.self="selected = null">
-      <div class="h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl">
-        <div class="mb-1 flex items-start justify-between">
-          <h2 class="font-display text-xl font-semibold tracking-tight">{{ selected.name }}</h2>
-          <button class="rounded p-1 text-ink/40 hover:text-ink" aria-label="Fermer" @click="selected = null">✕</button>
-        </div>
-        <p class="text-[13px] text-ink/55">{{ selected.sector }} · {{ selected.city }} · client depuis le {{ date(selected.createdAt) }}</p>
-        <div class="mt-3"><StatusBadge :status="selected.status" /></div>
-
-        <h3 class="mt-7 mb-2.5 text-[12px] font-medium uppercase tracking-[0.08em] text-ink/45">Contacts</h3>
-        <ul class="space-y-2.5">
-          <li v-for="contact in selected.contacts" :key="contact.id" class="rounded-md border border-ink/8 p-3">
-            <p class="text-[13.5px] font-medium">{{ contact.firstName }} {{ contact.lastName }} <span class="font-normal text-ink/50">· {{ contact.role }}</span></p>
-            <p class="mt-0.5 font-mono text-[12px] text-ink/55">{{ contact.email }}</p>
-          </li>
-        </ul>
-
-        <h3 class="mt-7 mb-2.5 text-[12px] font-medium uppercase tracking-[0.08em] text-ink/45">Opportunités</h3>
-        <ul class="space-y-2.5">
-          <li v-for="opp in selected.opportunities" :key="opp.id" class="rounded-md border border-ink/8 p-3">
-            <div class="flex items-center justify-between gap-2">
-              <p class="text-[13.5px] font-medium">{{ opp.title }}</p>
-              <StatusBadge :status="opp.stage" />
-            </div>
-            <p class="tnum mt-1 text-[12.5px] text-ink/55">{{ euro(opp.amount) }} · {{ opp.probability }} % · échéance {{ date(opp.expectedCloseAt) }}</p>
-          </li>
-          <li v-if="selected.opportunities.length === 0" class="text-[13px] text-ink/45">Aucune opportunité pour ce client.</li>
-        </ul>
-      </div>
     </div>
 
     <!-- Création client -->
