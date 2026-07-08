@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const props = defineProps<{ status: string }>()
 
+type Tone = 'ok' | 'warn' | 'alert' | 'neutral' | 'info'
+
 /** Statuts métier → libellé + tonalité. Couleur jamais seule : le libellé porte l'information. */
-const registry: Record<string, { label: string; tone: 'ok' | 'warn' | 'alert' | 'neutral' | 'info' }> = {
+const registry: Record<string, { label: string; tone: Tone }> = {
   // Clients
   prospect: { label: 'Prospect', tone: 'info' },
   actif: { label: 'Actif', tone: 'ok' },
@@ -35,9 +39,11 @@ const registry: Record<string, { label: string; tone: 'ok' | 'warn' | 'alert' | 
   validated: { label: 'Validée', tone: 'ok' },
 }
 
-const entry = registry[props.status] ?? { label: props.status, tone: 'neutral' as const }
+// computed : le badge suit les changements de `status` sur une instance persistante
+// (ex. la semaine de CRA qui passe draft → submitted → validated).
+const entry = computed(() => registry[props.status] ?? { label: props.status, tone: 'neutral' as Tone })
 
-const tones = {
+const tones: Record<Tone, string> = {
   ok: 'bg-ok/10 text-ok',
   warn: 'bg-warn/10 text-warn',
   alert: 'bg-alert/10 text-alert',

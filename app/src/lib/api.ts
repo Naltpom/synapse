@@ -31,10 +31,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new ApiError(401, 'Session expirée.')
   }
 
-  const body = response.status === 204 ? null : await response.json()
+  // Parse tolérant : une erreur amont (502/504 nginx, timeout) renvoie du HTML,
+  // pas du JSON — on ne veut pas d'une SyntaxError mais d'une ApiError propre.
+  const body =
+    response.status === 204 ? null : await response.json().catch(() => null)
 
   if (!response.ok) {
-    throw new ApiError(response.status, body?.error ?? 'Erreur inattendue.', body?.errors)
+    throw new ApiError(response.status, body?.error ?? 'Le serveur est momentanément indisponible.', body?.errors)
   }
 
   return body as T

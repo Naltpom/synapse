@@ -38,8 +38,14 @@ const opportunities = ref<Opportunity[]>([])
 const search = ref('')
 
 const showCreate = ref(false)
+const textFields = [
+  { key: 'name', label: 'Nom' },
+  { key: 'sector', label: 'Secteur' },
+  { key: 'city', label: 'Ville' },
+] as const
 const form = ref({ name: '', sector: '', city: '', status: 'prospect' })
 const formErrors = ref<Record<string, string>>({})
+const listError = ref('')
 
 const stages = ['qualification', 'proposition', 'negociation', 'gagnee', 'perdue']
 
@@ -49,8 +55,15 @@ const filteredClients = computed(() => {
 })
 
 async function reload() {
-  clients.value = await api.get<ClientRow[]>('/api/crm/clients')
-  opportunities.value = await api.get<Opportunity[]>('/api/crm/opportunities')
+  listError.value = ''
+  try {
+    ;[clients.value, opportunities.value] = await Promise.all([
+      api.get<ClientRow[]>('/api/crm/clients'),
+      api.get<Opportunity[]>('/api/crm/opportunities'),
+    ])
+  } catch (e) {
+    listError.value = e instanceof ApiError ? e.message : 'Chargement impossible.'
+  }
 }
 
 onMounted(reload)
@@ -72,13 +85,22 @@ async function createClient() {
 }
 
 async function changeStage(opportunity: Opportunity, stage: string) {
-  const updated = await api.patch<Opportunity>(`/api/crm/opportunities/${opportunity.id}`, { stage })
-  Object.assign(opportunity, updated)
+  const previous = opportunity.stage
+  try {
+    const updated = await api.patch<Opportunity>(`/api/crm/opportunities/${opportunity.id}`, { stage })
+    Object.assign(opportunity, updated)
+  } catch (e) {
+    // Rollback : le <select> est en liaison unidirectionnelle, on remet l'étape réelle.
+    opportunity.stage = previous
+    listError.value = e instanceof ApiError ? e.message : 'Mise à jour impossible.'
+  }
 }
 </script>
 
 <template>
   <div>
+    <p v-if="listError" class="mb-4 rounded-md bg-alert/8 px-3 py-2 text-[13px] text-alert">{{ listError }}</p>
+
     <!-- Onglets + actions -->
     <div class="mb-5 flex items-center justify-between">
       <div class="flex gap-1 rounded-md border border-ink/10 bg-surface p-1">
@@ -184,14 +206,14 @@ async function changeStage(opportunity: Opportunity, stage: string) {
       <form class="w-full max-w-sm rounded-lg bg-surface p-6 shadow-2xl" @submit.prevent="createClient">
         <h2 class="mb-5 font-display text-lg font-semibold tracking-tight">Ajouter un client</h2>
         <div class="space-y-3.5">
-          <div v-for="(label, field) in { name: 'Nom', sector: 'Secteur', city: 'Ville' }" :key="field">
-            <label :for="field" class="mb-1 block text-[13px] font-medium text-ink/75">{{ label }}</label>
+          <div v-for="f in textFields" :key="f.key">
+            <label :for="f.key" class="mb-1 block text-[13px] font-medium text-ink/75">{{ f.label }}</label>
             <input
-              :id="field"
-              v-model="form[field]"
+              :id="f.key"
+              v-model="form[f.key]"
               class="w-full rounded-md border border-ink/12 px-3 py-2 text-[13.5px] focus:border-primary"
             />
-            <p v-if="formErrors[field]" class="mt-1 text-[12.5px] text-alert">{{ formErrors[field] }}</p>
+            <p v-if="formErrors[f.key]" class="mt-1 text-[12.5px] text-alert">{{ formErrors[f.key] }}</p>
           </div>
           <div>
             <label for="status" class="mb-1 block text-[13px] font-medium text-ink/75">Statut</label>

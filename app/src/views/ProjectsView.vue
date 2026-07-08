@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { api } from '@/lib/api'
+import { api, ApiError } from '@/lib/api'
 import { date } from '@/lib/format'
 import StatusBadge from '@/components/StatusBadge.vue'
 
@@ -18,9 +18,17 @@ interface ProjectRow {
 }
 
 const projects = ref<ProjectRow[]>([])
+const loading = ref(true)
+const error = ref('')
 
 onMounted(async () => {
-  projects.value = await api.get<ProjectRow[]>('/api/projects')
+  try {
+    projects.value = await api.get<ProjectRow[]>('/api/projects')
+  } catch (e) {
+    error.value = e instanceof ApiError ? e.message : 'Chargement impossible.'
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
@@ -61,8 +69,10 @@ onMounted(async () => {
       </dl>
     </article>
 
-    <p v-if="projects.length === 0" class="col-span-full py-16 text-center text-[13.5px] text-ink/45">
-      Chargement des projets…
+    <p v-if="error" class="col-span-full py-16 text-center text-[13.5px] text-alert">{{ error }}</p>
+    <p v-else-if="loading" class="col-span-full py-16 text-center text-[13.5px] text-ink/45">Chargement des projets…</p>
+    <p v-else-if="projects.length === 0" class="col-span-full py-16 text-center text-[13.5px] text-ink/45">
+      Aucun projet en cours.
     </p>
   </div>
 </template>

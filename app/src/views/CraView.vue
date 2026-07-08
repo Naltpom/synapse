@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { api, ApiError } from '@/lib/api'
-import { currentUser } from '@/lib/session'
+import { isManager } from '@/lib/session'
 import { refreshNavCounters } from '@/lib/nav'
 import StatusBadge from '@/components/StatusBadge.vue'
 
@@ -32,18 +32,16 @@ const grid = ref<Grid | null>(null)
 const error = ref('')
 const forbidden = ref(false)
 
-const canValidate = computed(() =>
-  (currentUser.value?.roles ?? []).some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_ADMIN'),
-)
+const canValidate = isManager
 
 const editable = computed(() => grid.value?.week.status === 'draft')
 
 const weekTotal = computed(() =>
-  grid.value?.lines.reduce((sum, line) => sum + line.cells.reduce((s, c) => s + c.fraction, 0), 0) ?? 0,
+  grid.value?.lines.reduce((sum, line) => sum + line.cells.reduce((s, c) => s + (c?.fraction ?? 0), 0), 0) ?? 0,
 )
 
 function dayTotal(index: number): number {
-  return grid.value?.lines.reduce((sum, line) => sum + line.cells[index].fraction, 0) ?? 0
+  return grid.value?.lines.reduce((sum, line) => sum + (line.cells[index]?.fraction ?? 0), 0) ?? 0
 }
 
 async function reload() {
@@ -51,6 +49,7 @@ async function reload() {
   error.value = ''
   try {
     grid.value = await api.get<Grid>(`/api/cra?consultantId=${consultantId.value}&week=${weekAnchor.value}`)
+    forbidden.value = false
   } catch (e) {
     forbidden.value = e instanceof ApiError && e.status === 403
     if (!forbidden.value) throw e

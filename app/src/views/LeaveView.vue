@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { api } from '@/lib/api'
 import Skeleton from '@/components/Skeleton.vue'
-import { currentUser } from '@/lib/session'
+import { isManager } from '@/lib/session'
 import { refreshNavCounters } from '@/lib/nav'
 
 interface CalendarDay {
@@ -35,9 +35,7 @@ interface Leave {
 const calendar = ref<Calendar | null>(null)
 const pending = ref<Leave[]>([])
 
-const canDecide = computed(() =>
-  (currentUser.value?.roles ?? []).some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_ADMIN'),
-)
+const canDecide = isManager
 
 async function reload() {
   ;[calendar.value, pending.value] = await Promise.all([
