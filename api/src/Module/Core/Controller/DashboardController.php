@@ -163,7 +163,7 @@ final class DashboardController extends AbstractController
             'revenue' => [
                 'collectedYtd' => round($collectedYtd, 2),
                 'annualTarget' => $this->annualTarget,
-                'targetPercent' => (int) round($collectedYtd / $this->annualTarget * 100),
+                'targetPercent' => (int) round($collectedYtd / max(1, $this->annualTarget) * 100),
                 'series' => array_map(static fn (float $v): float => round($v, 2), $revenueSeries),
             ],
             'pipeline' => [

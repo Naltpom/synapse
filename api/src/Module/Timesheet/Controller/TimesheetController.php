@@ -174,6 +174,11 @@ final class TimesheetController extends AbstractController
             return $this->json(['error' => 'Consultant ou semaine invalide.'], 422);
         }
 
+        // Une semaine sans aucun temps saisi ne peut pas être soumise (invariant du brouillon).
+        if ([] === $this->entriesFor($consultant->getId() ?? 0, $this->weekDays($weekStart))) {
+            return $this->json(['error' => 'Aucun temps saisi : rien à soumettre.'], 422);
+        }
+
         $week = $this->weekFor($consultant, $weekStart);
         if (null === $week) {
             $week = new TimesheetWeek($consultant->getId() ?? 0, $consultant->getFullName(), $weekStart);

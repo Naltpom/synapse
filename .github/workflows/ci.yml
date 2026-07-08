@@ -24,6 +24,9 @@ jobs:
       - name: Installer les dépendances
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Style de code (php-cs-fixer, PER-CS2.0 + Symfony)
+        run: php vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no
+
       - name: Analyse statique (phpstan, niveau 6)
         run: php vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 

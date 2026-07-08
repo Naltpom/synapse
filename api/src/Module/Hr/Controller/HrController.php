@@ -46,6 +46,12 @@ final class HrController extends AbstractController
     #[Route('/leaves', name: 'hr_leaves_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
+        // Sans lien User↔Consultant, poser un congé « pour le compte de » un consultant
+        // arbitraire est une fonction back-office réservée aux managers (même règle que le CRA).
+        if (!$this->isGranted('ROLE_MANAGER') && !$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['error' => 'La saisie des congés est réservée aux managers.'], 403);
+        }
+
         $payload = $request->toArray();
 
         $consultantId = (int) ($payload['consultantId'] ?? 0);
@@ -76,7 +82,8 @@ final class HrController extends AbstractController
         \assert(null !== $consultant && null !== $type && null !== $startDate && null !== $endDate);
 
         $days = isset($payload['days']) ? max(1, (int) $payload['days']) : $this->businessDays($startDate, $endDate);
-        $source = 'mcp' === ($payload['source'] ?? null) ? 'mcp' : 'app';
+        // La provenance n'est jamais dictée par le client : une saisie via l'API est 'app'.
+        // La provenance 'mcp' n'est posée que par le backend assistant (ici, les fixtures).
 
         $leave = new LeaveRequest(
             $consultantId,
@@ -85,7 +92,7 @@ final class HrController extends AbstractController
             $startDate,
             $endDate,
             $days,
-            $source,
+            'app',
         );
         $this->em->persist($leave);
         $this->em->flush();

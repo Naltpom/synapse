@@ -89,9 +89,20 @@ final class CraTest extends ApiTestCase
     {
         $this->login();
         $id = $this->staffedConsultantId();
-        $this->client->request('GET', "/api/cra?consultantId={$id}&week=today");
+        // Semaine future dédiée : garantie vierge (aucune autre méthode de test n'y écrit).
+        $this->client->request('GET', "/api/cra?consultantId={$id}&week=2027-03-01");
         $grid = $this->json();
         $week = $grid['week']['weekStart'];
+
+        // Une semaine vide ne peut pas être soumise.
+        $this->client->jsonRequest('POST', '/api/cra/submit', ['consultantId' => $id, 'week' => $week]);
+        self::assertResponseStatusCodeSame(422);
+
+        // On saisit au moins une demi-journée, puis la soumission passe.
+        $this->client->jsonRequest('PUT', '/api/cra/entries', [
+            'consultantId' => $id, 'date' => $grid['days'][0], 'lineKey' => 'interne', 'fraction' => 0.5,
+        ]);
+        self::assertResponseIsSuccessful();
 
         $this->client->jsonRequest('POST', '/api/cra/submit', ['consultantId' => $id, 'week' => $week]);
         self::assertResponseIsSuccessful();

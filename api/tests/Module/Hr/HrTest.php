@@ -72,6 +72,39 @@ final class HrTest extends ApiTestCase
         self::assertNotEmpty($match, 'La création de congé doit apparaître au journal d\'audit.');
     }
 
+    public function testCreationIsReservedToManagers(): void
+    {
+        // Anti-usurpation : sans lien User↔Consultant, un simple utilisateur ne peut pas
+        // poser un congé pour le compte d'un consultant arbitraire.
+        $this->login('commerce@synapse.demo');
+        $this->client->jsonRequest('POST', '/api/hr/leaves', [
+            'consultantId' => 1,
+            'type' => 'rtt',
+            'startDate' => '2026-09-07',
+            'endDate' => '2026-09-07',
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testProvenanceCannotBeSpoofedByClient(): void
+    {
+        $this->login();
+        $consultantId = $this->firstCalendarConsultantId();
+
+        // Le client tente de se déclarer « mcp » : l'API force 'app'.
+        $this->client->jsonRequest('POST', '/api/hr/leaves', [
+            'consultantId' => $consultantId,
+            'type' => 'rtt',
+            'startDate' => '2026-09-14',
+            'endDate' => '2026-09-14',
+            'source' => 'mcp',
+        ]);
+
+        self::assertResponseStatusCodeSame(201);
+        self::assertSame('app', $this->json()['source']);
+    }
+
     public function testApprovalIsReservedToManagers(): void
     {
         $this->login('commerce@synapse.demo');

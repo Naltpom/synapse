@@ -6,7 +6,6 @@ namespace App\Module\Crm\Controller;
 
 use App\Module\Billing\Entity\Invoice;
 use App\Module\Billing\Enum\InvoiceStatus;
-use App\Module\Core\Enum\Practice;
 use App\Module\Crm\Entity\Client;
 use App\Module\Crm\Entity\Contact;
 use App\Module\Crm\Entity\Opportunity;
@@ -29,9 +28,13 @@ final class CrmController extends AbstractController
     #[Route('/clients', name: 'crm_clients_list', methods: ['GET'])]
     public function clients(Request $request): JsonResponse
     {
+        // Fetch-join contacts et opportunités : serializeClient() les parcourt pour
+        // chaque client — sans join on émettrait 2-3 requêtes SQL par ligne (N+1).
         $qb = $this->em->createQueryBuilder()
-            ->select('c')
+            ->select('c', 'ct', 'o')
             ->from(Client::class, 'c')
+            ->leftJoin('c.contacts', 'ct')
+            ->leftJoin('c.opportunities', 'o')
             ->orderBy('c.name', 'ASC');
 
         $search = trim((string) $request->query->get('search', ''));
