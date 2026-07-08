@@ -1,0 +1,36 @@
+# Démo Synapse : `docker compose up --build` puis http://localhost:8080
+# Les valeurs par défaut ci-dessous sont volontairement des identifiants de DÉMO.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: synapse
+      POSTGRES_USER: synapse
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-synapse_demo}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U synapse -d synapse"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    build: ./api
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET:-0f3d9a2b1c4e5d6f7a8b9c0d1e2f3a4b}
+      DATABASE_URL: postgresql://synapse:${POSTGRES_PASSWORD:-synapse_demo}@db:5432/synapse?serverVersion=16&charset=utf8
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./app
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  db-data:

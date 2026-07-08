@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  api:
+    name: API — phpstan + tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, zip, pdo_sqlite
+          coverage: none
+
+      - name: Installer les dépendances
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Analyse statique (phpstan, niveau 6)
+        run: php vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+      - name: Tests fonctionnels (phpunit)
+        run: php vendor/bin/phpunit
+
+  app:
+    name: Front — typecheck + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Vérification des types (vue-tsc)
+        run: npm run typecheck
+
+      - name: Build de production
+        run: npm run build
+
+  docker:
+    name: Docker — build des images
+    runs-on: ubuntu-latest
+    needs: [api, app]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build de la stack complète
+        run: docker compose build
