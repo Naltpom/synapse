@@ -46,8 +46,14 @@ npm run dev        # http://127.0.0.1:4300 (proxy /api → :8000)
 
 ## Ce que la démo montre
 
-- **Vue d'ensemble** : taux de staffing, CA encaissé, pipeline pondéré, facturation sur
-  12 mois, effectifs par practice, activité récente.
+- **Vue d'ensemble** : héro à sparklines (staffing, CA vs objectif annuel, pipeline pondéré,
+  retards de paiement), facturation empilée payée/en attente sur 12 mois, occupation par
+  practice, colonne « À traiter » avec actions directes.
+- **Assistant Synapse (⌘K)** : commandes en langage naturel (scénarios mockés dans cette
+  itération) avec trace des outils MCP appelés, résumé et **confirmation obligatoire** avant
+  action — l'UI est prête à recevoir le backend LLM + MCP (interface `AssistantEngine`).
+- **Congés & validations** : calendrier d'équipe croisant missions et absences, workflow
+  d'approbation réservé aux managers, provenance « créée via assistant » tracée.
 - **CRM** : clients, contacts, opportunités par practice ; création de client et
   changement d'étape d'opportunité (écritures journalisées).
 - **Staffing** : consultants (grade, practice, compétences, charge), missions et équipes.
@@ -68,7 +74,8 @@ synapse/
 │       ├── Crm/                clients, contacts, opportunités
 │       ├── Staffing/           consultants, missions, affectations
 │       ├── Project/            suivi de delivery
-│       └── Billing/            factures
+│       ├── Billing/            factures
+│       └── Hr/                 congés et validations
 ├── app/                        Vue 3 + TS + Vite + Tailwind 4 (SPA)
 ├── compose.yaml                db (PostgreSQL) · api (FrankenPHP) · web (nginx, port 8082)
 └── docs/adr/                   décisions d'architecture
@@ -106,7 +113,7 @@ Pour un outil interne dans une société de cybersécurité, la démo applique p
 | Vérification | Outil | État |
 |---|---|---|
 | Analyse statique API | phpstan niveau 6 | 0 erreur |
-| Tests fonctionnels API | PHPUnit (auth, RBAC, dashboard, CRM, audit) | 11 tests |
+| Tests fonctionnels API | PHPUnit (auth, RBAC, dashboard, CRM, RH, audit) | 23 tests |
 | Types front | vue-tsc strict | 0 erreur |
 | CI | GitHub Actions (api + app + build Docker) | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
 
