@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { currentUser, isAdmin, isManager, logout } from '@/lib/session'
 import { navCounters, refreshNavCounters } from '@/lib/nav'
@@ -10,6 +10,10 @@ import AssistantPalette from './AssistantPalette.vue'
 import PreferencesModal from './PreferencesModal.vue'
 
 const route = useRoute()
+
+// Drawer mobile/tablette : fermé par défaut, refermé à chaque navigation.
+const sidebarOpen = ref(false)
+watch(() => route.path, () => (sidebarOpen.value = false))
 
 function onKeydown(e: KeyboardEvent) {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -89,7 +93,17 @@ onMounted(refreshNavCounters)
 
 <template>
   <div class="flex min-h-screen">
-    <aside class="sticky top-0 flex h-screen w-56 flex-none flex-col bg-shell text-white">
+    <!-- Backdrop du drawer (mobile/tablette uniquement) -->
+    <div
+      v-if="sidebarOpen"
+      class="fixed inset-0 z-30 bg-shell/50 backdrop-blur-[1px] lg:hidden"
+      @click="sidebarOpen = false"
+    />
+
+    <aside
+      class="fixed inset-y-0 left-0 z-40 flex h-screen w-64 flex-none flex-col bg-shell text-white transition-transform duration-200 lg:sticky lg:top-0 lg:z-auto lg:w-56 lg:translate-x-0"
+      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+    >
       <div class="flex items-center gap-2.5 px-5 pt-[22px] pb-[26px]">
         <SynapseMark :size="30" class="text-white" />
         <div>
@@ -164,13 +178,25 @@ onMounted(refreshNavCounters)
 
     <div class="flex min-w-0 flex-1 flex-col">
       <header class="bg-shell text-white">
-        <div class="flex items-center justify-between gap-5 px-8 py-5">
-          <div>
-            <h1 class="font-display text-xl font-semibold tracking-tight">{{ route.meta.title }}</h1>
-            <p class="mt-0.5 text-[12.5px] text-white/45">{{ today }}</p>
+        <div class="flex items-center justify-between gap-3 px-4 py-4 lg:gap-5 lg:px-8 lg:py-5">
+          <div class="flex min-w-0 items-center gap-3">
+            <button
+              class="-ml-1 shrink-0 rounded-md p-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+              aria-label="Ouvrir le menu"
+              @click="sidebarOpen = true"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+            <div class="min-w-0">
+              <h1 class="truncate font-display text-lg font-semibold tracking-tight lg:text-xl">{{ route.meta.title }}</h1>
+              <p class="mt-0.5 hidden truncate text-[12.5px] text-white/45 sm:block">{{ today }}</p>
+            </div>
           </div>
           <button
-            class="flex w-80 items-center gap-[9px] rounded-lg border border-white/12 bg-white/7 px-3 py-[7px] text-[12.5px] text-white/50 transition-colors hover:border-[#6b9aff]/60 hover:text-white/75"
+            class="flex shrink-0 items-center gap-[9px] rounded-lg border border-white/12 bg-white/7 px-2.5 py-[7px] text-[12.5px] text-white/50 transition-colors hover:border-[#6b9aff]/60 hover:text-white/75 md:w-80 md:px-3"
+            :aria-label="'Demander à Synapse (' + shortcutLabel + ')'"
             @click="openAssistant"
           >
             <svg width="14" height="14" viewBox="0 0 32 32" fill="none" aria-hidden="true">
@@ -179,15 +205,15 @@ onMounted(refreshNavCounters)
               <circle cx="16" cy="8" r="5.2" fill="#0048fe" />
               <circle cx="26" cy="20" r="3.8" fill="#6b9aff" />
             </svg>
-            Demander à Synapse…
-            <kbd class="ml-auto rounded border border-white/20 px-[5px] py-px font-mono text-[10px] font-medium">{{ shortcutLabel }}</kbd>
+            <span class="hidden md:inline">Demander à Synapse…</span>
+            <kbd class="ml-auto hidden rounded border border-white/20 px-[5px] py-px font-mono text-[10px] font-medium md:inline">{{ shortcutLabel }}</kbd>
           </button>
         </div>
         <!-- Le dashboard téléporte son héro ici (métriques + sparklines). -->
         <div id="hero-outlet"></div>
       </header>
 
-      <main class="flex-1 px-8 py-6">
+      <main class="flex-1 px-4 py-5 lg:px-8 lg:py-6">
         <router-view v-slot="{ Component }">
           <Transition name="fade" mode="out-in">
             <component :is="Component" />

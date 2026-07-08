@@ -157,7 +157,8 @@ async function validateWeek() {
     <p v-if="error" class="mb-4 rounded-md bg-alert/8 px-3 py-2 text-[13px] text-alert">{{ error }}</p>
 
     <!-- Grille -->
-    <div v-if="grid" class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
+    <div v-if="grid" class="overflow-x-auto rounded-lg border border-ink/8 bg-surface">
+      <div class="min-w-[620px]">
       <div class="grid grid-cols-[minmax(200px,1.2fr)_repeat(5,1fr)] border-b border-ink/8 text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
         <span class="px-[18px] py-3 font-medium">Activité</span>
         <span v-for="day in grid.days" :key="day" class="px-2 py-3 text-center font-medium">{{ dayHeader(day) }}</span>
@@ -200,6 +201,7 @@ async function validateWeek() {
         >
           {{ dayTotal(i) }}
         </span>
+      </div>
       </div>
     </div>
 

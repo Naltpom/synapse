@@ -67,11 +67,11 @@ onMounted(async () => {
     <div class="grid items-start gap-[22px] xl:grid-cols-[1fr_380px]">
       <div class="flex min-w-0 flex-col gap-[22px]">
         <!-- Missions -->
-        <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
+        <section class="overflow-x-auto rounded-lg border border-ink/8 bg-surface">
           <h3 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">
             Missions <span class="text-ink/40">({{ data.missions.length }})</span>
           </h3>
-          <table v-if="data.missions.length" class="w-full text-[13.5px]">
+          <table v-if="data.missions.length" class="w-full min-w-[560px] text-[13.5px]">
             <tbody>
               <tr v-for="mission in data.missions" :key="mission.id" class="border-b border-ink/5 last:border-0">
                 <td class="px-[18px] py-[11px] font-medium">{{ mission.title }}</td>
@@ -85,11 +85,11 @@ onMounted(async () => {
         </section>
 
         <!-- Factures -->
-        <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
+        <section class="overflow-x-auto rounded-lg border border-ink/8 bg-surface">
           <h3 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">
             Factures <span class="text-ink/40">({{ data.invoices.length }})</span>
           </h3>
-          <table v-if="data.invoices.length" class="w-full text-[13.5px]">
+          <table v-if="data.invoices.length" class="w-full min-w-[560px] text-[13.5px]">
             <tbody>
               <tr v-for="invoice in data.invoices" :key="invoice.id" class="border-b border-ink/5 last:border-0">
                 <td class="px-[18px] py-[11px] font-mono text-[12.5px] text-ink/70">{{ invoice.number }}</td>

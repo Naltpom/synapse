@@ -70,12 +70,12 @@ const actionColors: Record<string, string> = {
   <div v-if="data">
     <!-- Héro : 4 métriques à sparklines, rendues dans le header sombre du shell -->
     <Teleport to="#hero-outlet">
-      <div class="grid grid-cols-4 px-8 pt-1.5 pb-7 text-white">
-        <div class="border-r border-white/9 pr-7">
+      <div class="grid grid-cols-2 gap-x-6 gap-y-6 px-4 pt-1.5 pb-6 text-white lg:grid-cols-4 lg:gap-0 lg:px-8 lg:pb-7">
+        <div class="lg:border-r lg:border-white/9 lg:pr-7">
           <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-white/45">Taux de staffing</p>
           <div class="mt-2 flex items-end justify-between gap-3">
-            <span class="tnum font-display text-[38px] font-semibold leading-none tracking-[-0.03em]">{{ data.hero.staffing.value }} %</span>
-            <Sparkline :points="data.hero.staffing.series" />
+            <span class="tnum font-display text-[28px] font-semibold leading-none tracking-[-0.03em] lg:text-[38px]">{{ data.hero.staffing.value }} %</span>
+            <Sparkline :points="data.hero.staffing.series" class="hidden sm:block" />
           </div>
           <p class="mt-2 text-[12px] text-white/50">
             {{ data.hero.staffing.bench }} en intercontrat
@@ -83,33 +83,33 @@ const actionColors: Record<string, string> = {
           </p>
         </div>
 
-        <div class="border-r border-white/9 px-7">
+        <div class="lg:border-r lg:border-white/9 lg:px-7">
           <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-white/45">CA encaissé {{ new Date().getFullYear() }}</p>
           <div class="mt-2 flex items-end justify-between gap-3">
-            <span class="tnum font-display text-[38px] font-semibold leading-none tracking-[-0.03em]">{{ euroCompact(data.hero.revenue.collectedYtd) }}</span>
-            <Sparkline :points="data.hero.revenue.series" />
+            <span class="tnum font-display text-[28px] font-semibold leading-none tracking-[-0.03em] lg:text-[38px]">{{ euroCompact(data.hero.revenue.collectedYtd) }}</span>
+            <Sparkline :points="data.hero.revenue.series" class="hidden sm:block" />
           </div>
           <p class="mt-2 text-[12px] text-white/50">
             objectif annuel : {{ euroCompact(data.hero.revenue.annualTarget) }} · <span class="text-[#7ee2a8]">{{ data.hero.revenue.targetPercent }} %</span>
           </p>
         </div>
 
-        <div class="border-r border-white/9 px-7">
+        <div class="lg:border-r lg:border-white/9 lg:px-7">
           <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-white/45">Pipeline pondéré</p>
           <div class="mt-2 flex items-end justify-between gap-3">
-            <span class="tnum font-display text-[38px] font-semibold leading-none tracking-[-0.03em]">{{ euroCompact(data.hero.pipeline.weightedAmount) }}</span>
-            <Sparkline :points="data.hero.pipeline.series" />
+            <span class="tnum font-display text-[28px] font-semibold leading-none tracking-[-0.03em] lg:text-[38px]">{{ euroCompact(data.hero.pipeline.weightedAmount) }}</span>
+            <Sparkline :points="data.hero.pipeline.series" class="hidden sm:block" />
           </div>
           <p class="mt-2 text-[12px] text-white/50">
             {{ data.hero.pipeline.openCount }} opportunités · {{ data.hero.pipeline.negotiationCount }} en négociation
           </p>
         </div>
 
-        <div class="pl-7">
+        <div class="lg:pl-7">
           <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-[#ff9ba0]">Retards de paiement</p>
           <div class="mt-2 flex items-end justify-between gap-3">
-            <span class="tnum font-display text-[38px] font-semibold leading-none tracking-[-0.03em] text-[#ff9ba0]">{{ euroCompact(data.hero.overdue.amount) }}</span>
-            <Sparkline :points="data.hero.overdue.series" />
+            <span class="tnum font-display text-[28px] font-semibold leading-none tracking-[-0.03em] text-[#ff9ba0] lg:text-[38px]">{{ euroCompact(data.hero.overdue.amount) }}</span>
+            <Sparkline :points="data.hero.overdue.series" class="hidden sm:block" />
           </div>
           <p class="mt-2 text-[12px] text-white/50">{{ data.hero.overdue.count }} factures · relance à faire</p>
         </div>

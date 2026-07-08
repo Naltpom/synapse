@@ -134,8 +134,8 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     </div>
 
     <!-- Clients -->
-    <div v-if="tab === 'clients'" class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
-      <table class="w-full text-[13.5px]">
+    <div v-if="tab === 'clients'" class="overflow-x-auto rounded-lg border border-ink/8 bg-surface">
+      <table class="w-full min-w-[640px] text-[13.5px]">
         <thead>
           <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
             <th class="px-[18px] py-3 font-medium">Client</th>
@@ -168,8 +168,8 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     </div>
 
     <!-- Opportunités -->
-    <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
-      <table class="w-full text-[13.5px]">
+    <div v-else class="overflow-x-auto rounded-lg border border-ink/8 bg-surface">
+      <table class="w-full min-w-[640px] text-[13.5px]">
         <thead>
           <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
             <th class="px-[18px] py-3 font-medium">Opportunité</th>

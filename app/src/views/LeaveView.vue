@@ -102,6 +102,8 @@ const cellClasses: Record<CalendarRow['cells'][number]['state'], string> = {
         {{ monthTitle }}
       </h2>
       <div v-if="calendar" class="p-[18px]">
+        <div class="overflow-x-auto">
+        <div class="min-w-[720px]">
         <div class="mb-1.5 grid grid-cols-[150px_repeat(10,1fr)] gap-1 text-[11px] text-ink/45">
           <span />
           <span v-for="day in calendar.days" :key="day.date" class="text-center" :class="{ 'text-ink/30': day.weekend }">
@@ -121,8 +123,10 @@ const cellClasses: Record<CalendarRow['cells'][number]['state'], string> = {
             :class="cellClasses[cell.state]"
           />
         </div>
+        </div>
+        </div>
 
-        <div class="mt-3.5 flex gap-4 text-[11px] text-ink/50">
+        <div class="mt-3.5 flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-ink/50">
           <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] bg-primary" />Mission</span>
           <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] bg-warn" />Congé validé</span>
           <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] border-[1.5px] border-dashed border-warn bg-surface" />Congé en attente</span>
