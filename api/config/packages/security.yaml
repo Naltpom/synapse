@@ -2,6 +2,12 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
+    # La direction hérite des droits manager, le manager de ceux de l'utilisateur.
+    # Permet un simple #[IsGranted('ROLE_MANAGER')] côté contrôleur.
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_MANAGER, ROLE_USER]
+        ROLE_MANAGER: [ROLE_USER]
+
     providers:
         app_users:
             entity:
