@@ -15,6 +15,24 @@ final class CraTest extends ApiTestCase
         self::assertResponseStatusCodeSame(401);
     }
 
+    public function testCraIsReservedToManagers(): void
+    {
+        // Anti-IDOR : sans lien User↔Consultant, la saisie pour le compte d'un
+        // consultant (lecture comprise) est réservée au back-office managers/direction.
+        $this->login('commerce@synapse.demo');
+
+        $this->client->request('GET', '/api/cra?consultantId=1');
+        self::assertResponseStatusCodeSame(403);
+
+        $this->client->jsonRequest('PUT', '/api/cra/entries', [
+            'consultantId' => 1, 'date' => '2026-08-03', 'lineKey' => 'interne', 'fraction' => 0.5,
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        $this->client->jsonRequest('POST', '/api/cra/submit', ['consultantId' => 1, 'week' => '2026-08-03']);
+        self::assertResponseStatusCodeSame(403);
+    }
+
     public function testGridExposesMissionAndCategoryLines(): void
     {
         $this->login();

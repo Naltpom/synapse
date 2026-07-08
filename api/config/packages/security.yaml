@@ -34,6 +34,10 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         # Le journal d'audit expose IP et activité des collaborateurs : direction uniquement.
         - { path: ^/api/audit, roles: ROLE_ADMIN }
+        # CRA : saisie back-office pour le compte des consultants → managers/direction
+        # uniquement (lecture comprise, pour éviter l'énumération). Le self-service
+        # viendra avec un lien User↔Consultant.
+        - { path: ^/api/cra, roles: [ROLE_MANAGER, ROLE_ADMIN] }
         - { path: ^/api, roles: ROLE_USER }
 
 when@test:

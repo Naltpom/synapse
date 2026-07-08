@@ -55,12 +55,15 @@ const navOperations = computed<NavItem[]>(() => [
     badge: navCounters.value?.hrPending || undefined,
     badgeClass: 'bg-white/10 text-white/60',
   },
-  {
-    to: '/cra',
-    label: 'CRA',
-    badge: navCounters.value?.craPending || undefined,
-    badgeClass: 'bg-white/10 text-white/60',
-  },
+  // Le CRA est une fonction back-office : réservé aux managers et à la direction.
+  ...(isManager.value
+    ? [{
+        to: '/cra',
+        label: 'CRA',
+        badge: navCounters.value?.craPending || undefined,
+        badgeClass: 'bg-white/10 text-white/60',
+      }]
+    : []),
 ])
 
 const today = computed(() => {

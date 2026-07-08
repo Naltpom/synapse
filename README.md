@@ -107,7 +107,9 @@ Pour un outil interne dans une société de cybersécurité, la démo applique p
 - **Anti brute-force** : `login_throttling` (5 tentatives / identifiant+IP / 15 min) ;
 - API intégralement derrière authentification (`access_control`), 401 JSON propres,
   cookie de session `HttpOnly` + `SameSite=Lax` ; **journal d'audit réservé à ROLE_ADMIN**
-  (dans l'API comme dans l'extrait du dashboard) ;
+  (dans l'API comme dans l'extrait du dashboard) ; **CRA et marges réservés aux
+  managers/direction** (anti-IDOR : pas de saisie pour le compte d'autrui sans habilitation —
+  le self-service consultant viendra avec un lien User↔Consultant) ;
 - **Content-Security-Policy stricte** (tout est same-origin, y compris les polices) ;
 - **Journal d'audit inaltérable côté applicatif** alimenté par listener Doctrine :
   créations, modifications (avec diff), suppressions, connexions et tentatives échouées —

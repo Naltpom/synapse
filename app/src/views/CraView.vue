@@ -30,6 +30,7 @@ const consultantId = ref<number | null>(null)
 const weekAnchor = ref(new Date().toISOString().slice(0, 10))
 const grid = ref<Grid | null>(null)
 const error = ref('')
+const forbidden = ref(false)
 
 const canValidate = computed(() =>
   (currentUser.value?.roles ?? []).some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_ADMIN'),
@@ -48,7 +49,12 @@ function dayTotal(index: number): number {
 async function reload() {
   if (consultantId.value === null) return
   error.value = ''
-  grid.value = await api.get<Grid>(`/api/cra?consultantId=${consultantId.value}&week=${weekAnchor.value}`)
+  try {
+    grid.value = await api.get<Grid>(`/api/cra?consultantId=${consultantId.value}&week=${weekAnchor.value}`)
+  } catch (e) {
+    forbidden.value = e instanceof ApiError && e.status === 403
+    if (!forbidden.value) throw e
+  }
 }
 
 onMounted(async () => {
@@ -108,7 +114,11 @@ async function validateWeek() {
 </script>
 
 <template>
-  <div>
+  <div v-if="forbidden" class="rounded-lg border border-ink/8 bg-surface p-10 text-center text-[13.5px] text-ink/45">
+    La saisie des CRA est réservée aux managers et à la direction.
+  </div>
+
+  <div v-else>
     <!-- Barre d'outils -->
     <div class="mb-5 flex flex-wrap items-center gap-3">
       <select
