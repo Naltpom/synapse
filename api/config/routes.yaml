@@ -1,0 +1,6 @@
+# Les routes sont déclarées par attributs #[Route] dans les contrôleurs de chaque module.
+controllers:
+    resource:
+        path: ../src/Module/
+        namespace: App\Module
+    type: attribute
