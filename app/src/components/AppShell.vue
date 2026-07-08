@@ -80,6 +80,10 @@ const today = computed(() => {
 const initials = (name: string) =>
   name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
 
+// Raccourci affiché selon l'OS : ⌘K sur Apple, Ctrl K ailleurs (le handler écoute les deux).
+const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent)
+const shortcutLabel = isMac ? '⌘K' : 'Ctrl K'
+
 onMounted(refreshNavCounters)
 </script>
 
@@ -176,7 +180,7 @@ onMounted(refreshNavCounters)
               <circle cx="26" cy="20" r="3.8" fill="#6b9aff" />
             </svg>
             Demander à Synapse…
-            <kbd class="ml-auto rounded border border-white/20 px-[5px] py-px font-mono text-[10px] font-medium">⌘K</kbd>
+            <kbd class="ml-auto rounded border border-white/20 px-[5px] py-px font-mono text-[10px] font-medium">{{ shortcutLabel }}</kbd>
           </button>
         </div>
         <!-- Le dashboard téléporte son héro ici (métriques + sparklines). -->
