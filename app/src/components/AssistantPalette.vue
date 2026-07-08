@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { api } from '@/lib/api'
 import {
   activeScenario,
   assistantOpen,
@@ -11,22 +12,79 @@ import {
 } from '@/lib/assistant'
 import SynapseMark from './SynapseMark.vue'
 
+interface SearchResult {
+  type: 'client' | 'consultant' | 'mission' | 'invoice'
+  id: number
+  title: string
+  subtitle: string
+  target: string
+}
+
 const router = useRouter()
 const prompt = ref('')
 const noMatch = ref(false)
+const results = ref<SearchResult[]>([])
+const selected = ref(0)
+
+const typeLabels: Record<SearchResult['type'], string> = {
+  client: 'Client',
+  consultant: 'Consultant',
+  mission: 'Mission',
+  invoice: 'Facture',
+}
+
+let debounce: ReturnType<typeof setTimeout> | undefined
+watch(prompt, (value) => {
+  noMatch.value = false
+  clearTimeout(debounce)
+  if (value.trim().length < 2) {
+    results.value = []
+    return
+  }
+  debounce = setTimeout(async () => {
+    try {
+      const response = await api.get<{ results: SearchResult[] }>(`/api/search?q=${encodeURIComponent(value.trim())}`)
+      results.value = response.results
+      selected.value = 0
+    } catch {
+      results.value = []
+    }
+  }, 200)
+})
 
 function pick(key: string) {
   activeScenario.value = scenarioFor(key)
   noMatch.value = false
 }
 
+function goResult(result: SearchResult) {
+  closeAssistant()
+  prompt.value = ''
+  if (result.target === 'client') {
+    router.push({ name: 'client', params: { id: result.id } })
+  } else {
+    router.push({ name: result.target })
+  }
+}
+
+function move(delta: number) {
+  if (!results.value.length) return
+  selected.value = (selected.value + delta + results.value.length) % results.value.length
+}
+
 function submit() {
   if (!prompt.value.trim()) return
+  // Priorité au résultat de recherche sélectionné ; sinon on tente un scénario assistant.
+  if (results.value.length > 0) {
+    goResult(results.value[selected.value])
+    return
+  }
   const scenario = mockEngine.run(prompt.value)
   if (scenario) {
     activeScenario.value = scenario
     noMatch.value = false
     prompt.value = ''
+    results.value = []
   } else {
     noMatch.value = true
   }
@@ -64,9 +122,11 @@ function goTarget() {
       <div class="flex items-center gap-2.5 border-b border-ink/8 px-[18px] py-4">
         <input
           v-model="prompt"
-          placeholder="Décrivez ce que vous voulez faire — l'assistant s'occupe des clics…"
+          placeholder="Rechercher ou décrire une action — l'assistant s'occupe des clics…"
           class="flex-1 bg-transparent py-1 text-[14.5px] outline-none"
           @keydown.enter="submit"
+          @keydown.down.prevent="move(1)"
+          @keydown.up.prevent="move(-1)"
         />
         <button class="flex flex-none items-center gap-1.5 rounded-full border border-ink/15 px-3 py-[5px] text-[12px] text-ink/60 transition-colors hover:border-primary hover:text-primary">
           <span class="h-[7px] w-[7px] rounded-full bg-alert" />
@@ -74,8 +134,30 @@ function goTarget() {
         </button>
       </div>
 
+      <!-- Résultats de recherche -->
+      <div v-if="!activeScenario && results.length > 0" class="px-[18px] pt-4 pb-5">
+        <p class="mb-2.5 text-[11px] font-medium uppercase tracking-[0.08em] text-ink/45">Résultats</p>
+        <div class="flex flex-col gap-1.5" role="listbox">
+          <button
+            v-for="(result, i) in results"
+            :key="`${result.type}-${result.id}`"
+            role="option"
+            :aria-selected="i === selected"
+            class="flex items-center gap-2.5 rounded-lg border px-3.5 py-2.5 text-left text-[13.5px] transition-colors"
+            :class="i === selected ? 'border-primary bg-primary-soft/35' : 'border-ink/10 hover:border-primary'"
+            @mouseenter="selected = i"
+            @click="goResult(result)"
+          >
+            <span class="flex-none rounded bg-ink/6 px-1.5 py-0.5 font-mono text-[10px] font-medium text-ink/60">{{ typeLabels[result.type] }}</span>
+            <span class="font-medium">{{ result.title }}</span>
+            <span class="truncate text-ink/50">{{ result.subtitle }}</span>
+          </button>
+        </div>
+        <p class="mt-3 text-[11.5px] text-ink/40">↑↓ pour naviguer · Entrée pour ouvrir · ou décrivez une action pour l'assistant</p>
+      </div>
+
       <!-- Idle : suggestions -->
-      <div v-if="!activeScenario" class="px-[18px] pt-4 pb-5">
+      <div v-else-if="!activeScenario" class="px-[18px] pt-4 pb-5">
         <p class="mb-2.5 text-[11px] font-medium uppercase tracking-[0.08em] text-ink/45">Essayez par exemple</p>
         <div class="flex flex-col gap-2">
           <button
