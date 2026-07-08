@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { currentUser, isAdmin, logout } from '@/lib/session'
+import { currentUser, isAdmin, isManager, logout } from '@/lib/session'
 import { navCounters, refreshNavCounters } from '@/lib/nav'
 import { closeAssistant, openAssistant, toggleAssistant } from '@/lib/assistant'
 import SynapseMark from './SynapseMark.vue'
@@ -29,6 +29,7 @@ interface NavItem {
 
 const navPilotage = computed<NavItem[]>(() => [
   { to: '/dashboard', label: 'Vue d\'ensemble' },
+  ...(isManager.value ? [{ to: '/marges', label: 'Marges' }] : []),
   ...(isAdmin.value ? [{ to: '/audit', label: 'Journal d\'audit' }] : []),
 ])
 

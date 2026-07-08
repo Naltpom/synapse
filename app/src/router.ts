@@ -20,6 +20,7 @@ const router = createRouter({
         { path: 'cra', name: 'cra', component: () => import('./views/CraView.vue'), meta: { title: 'CRA — feuille de temps' } },
         { path: 'audit', name: 'audit', component: () => import('./views/AuditView.vue'), meta: { title: 'Journal d\'audit' } },
         { path: 'securite', name: 'security', component: () => import('./views/SecurityView.vue'), meta: { title: 'Ma sécurité' } },
+        { path: 'marges', name: 'margins', component: () => import('./views/MarginsView.vue'), meta: { title: 'Marges & rentabilité' } },
       ],
     },
   ],

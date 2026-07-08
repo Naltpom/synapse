@@ -273,17 +273,18 @@ final class AppFixtures extends Fixture
             [Practice::Formation, 2],
         ];
 
+        // [grade, TJM de vente, coût jour chargé]
         $grades = [
-            [ConsultantGrade::Junior, 550],
-            [ConsultantGrade::Confirme, 750],
-            [ConsultantGrade::Senior, 950],
-            [ConsultantGrade::Manager, 1200],
+            [ConsultantGrade::Junior, 550, 300],
+            [ConsultantGrade::Confirme, 750, 400],
+            [ConsultantGrade::Senior, 950, 520],
+            [ConsultantGrade::Manager, 1200, 680],
         ];
 
         $consultants = [];
         foreach ($distribution as [$practice, $count]) {
             for ($i = 0; $i < $count; ++$i) {
-                [$grade, $baseRate] = $grades[$this->faker->numberBetween(0, 3)];
+                [$grade, $baseRate, $baseCost] = $grades[$this->faker->numberBetween(0, 3)];
                 $firstName = $this->faker->firstName();
                 $lastName = $this->faker->lastName();
                 /** @var list<string> $skills */
@@ -299,6 +300,7 @@ final class AppFixtures extends Fixture
                     array_values($skills),
                     new \DateTimeImmutable('today -'.$this->faker->numberBetween(90, 2600).' days'),
                 );
+                $consultant->setCostRate($baseCost + $this->faker->numberBetween(-3, 3) * 10);
                 $manager->persist($consultant);
                 $consultants[] = $consultant;
             }

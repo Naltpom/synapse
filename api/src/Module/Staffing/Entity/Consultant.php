@@ -39,6 +39,10 @@ class Consultant
     #[ORM\Column]
     private int $dailyRate;
 
+    /** Coût journalier chargé (salaire + charges), en euros — sert au calcul de marge. */
+    #[ORM\Column(options: ['default' => 0])]
+    private int $costRate = 0;
+
     /** @var list<string> */
     #[ORM\Column]
     private array $skills = [];
@@ -85,6 +89,18 @@ class Consultant
     public function getPractice(): Practice
     {
         return $this->practice;
+    }
+
+    public function getCostRate(): int
+    {
+        return $this->costRate;
+    }
+
+    public function setCostRate(int $costRate): self
+    {
+        $this->costRate = $costRate;
+
+        return $this;
     }
 
     /** @return Collection<int, Assignment> */

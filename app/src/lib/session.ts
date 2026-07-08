@@ -12,6 +12,10 @@ export const currentUser = ref<SessionUser | null>(null)
 
 export const isAdmin = computed(() => currentUser.value?.roles.includes('ROLE_ADMIN') ?? false)
 
+export const isManager = computed(
+  () => (currentUser.value?.roles ?? []).some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_ADMIN'),
+)
+
 let checked = false
 
 /** Restaure la session au premier accès (cookie déjà présent). */
