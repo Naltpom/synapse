@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/ibm-plex-mono";
+
+@theme {
+  /* Charte Synetis */
+  --color-primary: #0048fe;
+  --color-primary-strong: #0037c4;
+  --color-primary-soft: #e6edff;
+  --color-ink: #181d27;
+  --color-ink-2: #242b3a;
+  --color-cloud: #eef2f6;
+  --color-alert: #ed1c24;
+  --color-ok: #0e8a4f;
+  --color-warn: #b45309;
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html {
+  font-family: var(--font-sans);
+  background: var(--color-cloud);
+  color: var(--color-ink);
+}
+
+/* Chiffres tabulaires partout où l'on compare des montants. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
