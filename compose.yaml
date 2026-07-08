@@ -1,4 +1,4 @@
-# Démo Synapse : `docker compose up --build` puis http://localhost:8080
+# Démo Synapse : `docker compose up --build` puis http://localhost:8082
 # Les valeurs par défaut ci-dessous sont volontairement des identifiants de DÉMO.
 services:
   db:
@@ -28,7 +28,7 @@ services:
   web:
     build: ./app
     ports:
-      - "8080:80"
+      - "8082:80"
     depends_on:
       - api
 

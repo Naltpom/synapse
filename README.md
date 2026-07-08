@@ -16,7 +16,7 @@ générées avec une graine fixe.
 docker compose up --build
 ```
 
-Puis ouvrir **http://localhost:8080**.
+Puis ouvrir **http://localhost:8082**.
 
 | Compte | E-mail | Rôle |
 |---|---|---|
@@ -70,7 +70,7 @@ synapse/
 │       ├── Project/            suivi de delivery
 │       └── Billing/            factures
 ├── app/                        Vue 3 + TS + Vite + Tailwind 4 (SPA)
-├── compose.yaml                db (PostgreSQL) · api (FrankenPHP) · web (nginx)
+├── compose.yaml                db (PostgreSQL) · api (FrankenPHP) · web (nginx, port 8082)
 └── docs/adr/                   décisions d'architecture
 ```
 
