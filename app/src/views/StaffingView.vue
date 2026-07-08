@@ -114,12 +114,12 @@ const allocationTone = (allocation: number) =>
     <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-white">
       <table class="w-full text-[13.5px]">
         <thead>
-          <tr class="border-b border-ink/8 text-left text-[12px] uppercase tracking-[0.06em] text-ink/45">
-            <th class="px-4 py-3 font-medium">Mission</th>
-            <th class="px-4 py-3 font-medium">Client</th>
-            <th class="px-4 py-3 font-medium">Practice</th>
-            <th class="px-4 py-3 font-medium">Statut</th>
-            <th class="px-4 py-3 font-medium">Période</th>
+          <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
+            <th class="px-[18px] py-3 font-medium">Mission</th>
+            <th class="px-[18px] py-3 font-medium">Client</th>
+            <th class="px-[18px] py-3 font-medium">Practice</th>
+            <th class="px-[18px] py-3 font-medium">Statut</th>
+            <th class="px-[18px] py-3 font-medium">Période</th>
             <th class="px-4 py-3 text-right font-medium">Budget (j)</th>
             <th class="px-4 py-3 text-right font-medium">Équipe</th>
           </tr>
@@ -131,13 +131,13 @@ const allocationTone = (allocation: number) =>
             class="cursor-pointer border-b border-ink/5 transition-colors last:border-0 hover:bg-primary-soft/40"
             @click="openMission(mission.id)"
           >
-            <td class="px-4 py-2.5 font-medium">{{ mission.title }}</td>
-            <td class="px-4 py-2.5 text-ink/60">{{ mission.clientName }}</td>
-            <td class="px-4 py-2.5 text-ink/60">{{ mission.practiceLabel }}</td>
-            <td class="px-4 py-2.5"><StatusBadge :status="mission.status" /></td>
-            <td class="px-4 py-2.5 text-[12.5px] text-ink/60">{{ date(mission.startDate) }} → {{ date(mission.endDate) }}</td>
-            <td class="tnum px-4 py-2.5 text-right">{{ mission.budgetDays }}</td>
-            <td class="tnum px-4 py-2.5 text-right">{{ mission.teamSize }}</td>
+            <td class="px-[18px] py-[11px] font-medium">{{ mission.title }}</td>
+            <td class="px-[18px] py-[11px] text-ink/60">{{ mission.clientName }}</td>
+            <td class="px-[18px] py-[11px] text-ink/60">{{ mission.practiceLabel }}</td>
+            <td class="px-[18px] py-[11px]"><StatusBadge :status="mission.status" /></td>
+            <td class="px-[18px] py-[11px] text-[12.5px] text-ink/60">{{ date(mission.startDate) }} → {{ date(mission.endDate) }}</td>
+            <td class="tnum px-[18px] py-[11px] text-right">{{ mission.budgetDays }}</td>
+            <td class="tnum px-[18px] py-[11px] text-right">{{ mission.teamSize }}</td>
           </tr>
         </tbody>
       </table>

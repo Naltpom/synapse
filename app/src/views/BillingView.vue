@@ -63,27 +63,27 @@ watch(statusFilter, reload)
     <div class="overflow-hidden rounded-lg border border-ink/8 bg-white">
       <table class="w-full text-[13.5px]">
         <thead>
-          <tr class="border-b border-ink/8 text-left text-[12px] uppercase tracking-[0.06em] text-ink/45">
-            <th class="px-4 py-3 font-medium">N°</th>
-            <th class="px-4 py-3 font-medium">Client</th>
-            <th class="px-4 py-3 font-medium">Libellé</th>
+          <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
+            <th class="px-[18px] py-3 font-medium">N°</th>
+            <th class="px-[18px] py-3 font-medium">Client</th>
+            <th class="px-[18px] py-3 font-medium">Libellé</th>
             <th class="px-4 py-3 text-right font-medium">Montant HT</th>
-            <th class="px-4 py-3 font-medium">Émise le</th>
-            <th class="px-4 py-3 font-medium">Échéance</th>
-            <th class="px-4 py-3 font-medium">Statut</th>
+            <th class="px-[18px] py-3 font-medium">Émise le</th>
+            <th class="px-[18px] py-3 font-medium">Échéance</th>
+            <th class="px-[18px] py-3 font-medium">Statut</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="invoice in data?.items" :key="invoice.id" class="border-b border-ink/5 last:border-0">
-            <td class="px-4 py-2.5 font-mono text-[12.5px] text-ink/70">{{ invoice.number }}</td>
-            <td class="px-4 py-2.5 font-medium">{{ invoice.clientName }}</td>
-            <td class="max-w-64 truncate px-4 py-2.5 text-ink/60">{{ invoice.label }}</td>
-            <td class="tnum px-4 py-2.5 text-right">{{ euro(invoice.amountHt) }}</td>
-            <td class="tnum px-4 py-2.5 text-[12.5px] text-ink/60">{{ date(invoice.issuedAt) }}</td>
-            <td class="tnum px-4 py-2.5 text-[12.5px]" :class="invoice.status === 'en_retard' ? 'font-medium text-alert' : 'text-ink/60'">
+            <td class="px-[18px] py-[11px] font-mono text-[12.5px] text-ink/70">{{ invoice.number }}</td>
+            <td class="px-[18px] py-[11px] font-medium">{{ invoice.clientName }}</td>
+            <td class="max-w-64 truncate px-[18px] py-[11px] text-ink/60">{{ invoice.label }}</td>
+            <td class="tnum px-[18px] py-[11px] text-right">{{ euro(invoice.amountHt) }}</td>
+            <td class="tnum px-[18px] py-[11px] text-[12.5px] text-ink/60">{{ date(invoice.issuedAt) }}</td>
+            <td class="tnum px-[18px] py-[11px] text-[12.5px]" :class="invoice.status === 'en_retard' ? 'font-medium text-alert' : 'text-ink/60'">
               {{ date(invoice.dueAt) }}
             </td>
-            <td class="px-4 py-2.5"><StatusBadge :status="invoice.status" /></td>
+            <td class="px-[18px] py-[11px]"><StatusBadge :status="invoice.status" /></td>
           </tr>
         </tbody>
       </table>

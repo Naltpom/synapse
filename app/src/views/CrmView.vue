@@ -118,11 +118,11 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     <div v-if="tab === 'clients'" class="overflow-hidden rounded-lg border border-ink/8 bg-white">
       <table class="w-full text-[13.5px]">
         <thead>
-          <tr class="border-b border-ink/8 text-left text-[12px] uppercase tracking-[0.06em] text-ink/45">
-            <th class="px-4 py-3 font-medium">Client</th>
-            <th class="px-4 py-3 font-medium">Secteur</th>
-            <th class="px-4 py-3 font-medium">Ville</th>
-            <th class="px-4 py-3 font-medium">Statut</th>
+          <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
+            <th class="px-[18px] py-3 font-medium">Client</th>
+            <th class="px-[18px] py-3 font-medium">Secteur</th>
+            <th class="px-[18px] py-3 font-medium">Ville</th>
+            <th class="px-[18px] py-3 font-medium">Statut</th>
             <th class="px-4 py-3 text-right font-medium">Contacts</th>
             <th class="px-4 py-3 text-right font-medium">Pipeline pondéré</th>
           </tr>
@@ -134,12 +134,12 @@ async function changeStage(opportunity: Opportunity, stage: string) {
             class="cursor-pointer border-b border-ink/5 transition-colors last:border-0 hover:bg-primary-soft/40"
             @click="openClient(client.id)"
           >
-            <td class="px-4 py-2.5 font-medium">{{ client.name }}</td>
-            <td class="px-4 py-2.5 text-ink/60">{{ client.sector }}</td>
-            <td class="px-4 py-2.5 text-ink/60">{{ client.city }}</td>
-            <td class="px-4 py-2.5"><StatusBadge :status="client.status" /></td>
-            <td class="tnum px-4 py-2.5 text-right text-ink/60">{{ client.contactCount }}</td>
-            <td class="tnum px-4 py-2.5 text-right">{{ client.weightedPipeline > 0 ? euro(client.weightedPipeline) : '—' }}</td>
+            <td class="px-[18px] py-[11px] font-medium">{{ client.name }}</td>
+            <td class="px-[18px] py-[11px] text-ink/60">{{ client.sector }}</td>
+            <td class="px-[18px] py-[11px] text-ink/60">{{ client.city }}</td>
+            <td class="px-[18px] py-[11px]"><StatusBadge :status="client.status" /></td>
+            <td class="tnum px-[18px] py-[11px] text-right text-ink/60">{{ client.contactCount }}</td>
+            <td class="tnum px-[18px] py-[11px] text-right">{{ client.weightedPipeline > 0 ? euro(client.weightedPipeline) : '—' }}</td>
           </tr>
         </tbody>
       </table>
@@ -152,23 +152,23 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-white">
       <table class="w-full text-[13.5px]">
         <thead>
-          <tr class="border-b border-ink/8 text-left text-[12px] uppercase tracking-[0.06em] text-ink/45">
-            <th class="px-4 py-3 font-medium">Opportunité</th>
-            <th class="px-4 py-3 font-medium">Client</th>
-            <th class="px-4 py-3 font-medium">Practice</th>
+          <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
+            <th class="px-[18px] py-3 font-medium">Opportunité</th>
+            <th class="px-[18px] py-3 font-medium">Client</th>
+            <th class="px-[18px] py-3 font-medium">Practice</th>
             <th class="px-4 py-3 text-right font-medium">Montant HT</th>
             <th class="px-4 py-3 text-right font-medium">Probabilité</th>
-            <th class="px-4 py-3 font-medium">Étape</th>
+            <th class="px-[18px] py-3 font-medium">Étape</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="opp in opportunities" :key="opp.id" class="border-b border-ink/5 last:border-0">
-            <td class="px-4 py-2.5 font-medium">{{ opp.title }}</td>
-            <td class="px-4 py-2.5 text-ink/60">{{ opp.clientName }}</td>
-            <td class="px-4 py-2.5 text-ink/60">{{ opp.practiceLabel }}</td>
-            <td class="tnum px-4 py-2.5 text-right">{{ euro(opp.amount) }}</td>
-            <td class="tnum px-4 py-2.5 text-right text-ink/60">{{ opp.probability }} %</td>
-            <td class="px-4 py-2.5">
+            <td class="px-[18px] py-[11px] font-medium">{{ opp.title }}</td>
+            <td class="px-[18px] py-[11px] text-ink/60">{{ opp.clientName }}</td>
+            <td class="px-[18px] py-[11px] text-ink/60">{{ opp.practiceLabel }}</td>
+            <td class="tnum px-[18px] py-[11px] text-right">{{ euro(opp.amount) }}</td>
+            <td class="tnum px-[18px] py-[11px] text-right text-ink/60">{{ opp.probability }} %</td>
+            <td class="px-[18px] py-[11px]">
               <select
                 :value="opp.stage"
                 class="rounded-md border border-ink/12 bg-white px-2 py-1 text-[12.5px]"
