@@ -28,7 +28,9 @@ services:
   web:
     build: ./app
     ports:
-      - "8082:80"
+      # Local : 8082 sur toutes les interfaces. Derrière un reverse proxy (VPS),
+      # définir WEB_BIND=127.0.0.1:8082 pour n'exposer le port qu'en localhost.
+      - "${WEB_BIND:-8082}:80"
     depends_on:
       - api
 
