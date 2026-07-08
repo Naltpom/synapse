@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { api } from '@/lib/api'
+import { api, ApiError } from '@/lib/api'
 
 interface AuditEntry {
   id: number
@@ -14,9 +14,15 @@ interface AuditEntry {
 }
 
 const entries = ref<AuditEntry[]>([])
+const forbidden = ref(false)
 
 onMounted(async () => {
-  entries.value = await api.get<AuditEntry[]>('/api/audit')
+  try {
+    entries.value = await api.get<AuditEntry[]>('/api/audit')
+  } catch (e) {
+    forbidden.value = e instanceof ApiError && e.status === 403
+    if (!forbidden.value) throw e
+  }
 })
 
 const timestamp = (iso: string) =>
@@ -58,7 +64,10 @@ const actionColors: Record<string, string> = {
       </li>
     </ol>
 
-    <p v-if="entries.length === 0" class="py-10 text-center text-[13px] text-white/40">
+    <p v-if="forbidden" class="py-10 text-center text-[13px] text-white/40">
+      Le journal d'audit est réservé à la direction. Connectez-vous avec un compte administrateur pour le consulter.
+    </p>
+    <p v-else-if="entries.length === 0" class="py-10 text-center text-[13px] text-white/40">
       Le journal est vide pour l'instant : chaque action d'écriture viendra s'inscrire ici.
     </p>
   </div>

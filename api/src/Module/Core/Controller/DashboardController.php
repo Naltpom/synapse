@@ -38,7 +38,8 @@ final class DashboardController extends AbstractController
             'missions' => $this->missionKpis(),
             'revenueByMonth' => $this->revenueByMonth($today),
             'practiceDistribution' => $this->practiceDistribution($today),
-            'recentActivity' => $this->recentActivity(),
+            // Extrait du journal d'audit : soumis à la même règle d'accès que /api/audit.
+            'recentActivity' => $this->isGranted('ROLE_ADMIN') ? $this->recentActivity() : [],
         ]);
     }
 

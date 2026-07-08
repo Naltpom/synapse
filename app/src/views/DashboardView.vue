@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { api } from '@/lib/api'
+import { isAdmin } from '@/lib/session'
 import { euro, euroCompact } from '@/lib/format'
 import KpiTile from '@/components/KpiTile.vue'
 import MonthlyBarChart, { type MonthPoint } from '@/components/MonthlyBarChart.vue'
@@ -66,11 +67,11 @@ const time = (iso: string) =>
       </section>
     </div>
 
-    <!-- Activité récente : le feed façon terminal, seule surface sombre de l'UI -->
-    <section class="rounded-lg bg-ink p-5 text-white">
+    <!-- Activité récente : le feed façon terminal, seule surface sombre de l'UI (direction uniquement) -->
+    <section v-if="isAdmin" class="rounded-lg bg-ink p-5 text-white">
       <div class="mb-3 flex items-center justify-between">
         <h2 class="font-display text-[15px] font-semibold tracking-tight">Activité récente</h2>
-        <router-link to="/audit" class="text-[12.5px] text-white/50 transition-colors hover:text-white">
+        <router-link v-if="isAdmin" to="/audit" class="text-[12.5px] text-white/50 transition-colors hover:text-white">
           Journal complet →
         </router-link>
       </div>

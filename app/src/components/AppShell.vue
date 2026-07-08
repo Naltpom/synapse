@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { currentUser, logout } from '@/lib/session'
+import { currentUser, isAdmin, logout } from '@/lib/session'
 import SynapseMark from './SynapseMark.vue'
 
 const route = useRoute()
 
-const nav = [
+const nav = computed(() => [
   { to: '/dashboard', label: 'Vue d\'ensemble' },
   { to: '/crm', label: 'CRM' },
   { to: '/staffing', label: 'Staffing' },
   { to: '/projets', label: 'Projets' },
   { to: '/facturation', label: 'Facturation' },
-  { to: '/audit', label: 'Journal d\'audit' },
-]
+  // Le journal d'audit est réservé à la direction (ROLE_ADMIN).
+  ...(isAdmin.value ? [{ to: '/audit', label: 'Journal d\'audit' }] : []),
+])
 
 const initials = (name: string) =>
   name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()

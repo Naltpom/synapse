@@ -47,4 +47,21 @@ final class SecurityTest extends ApiTestCase
         $actions = array_column($this->json(), 'action');
         self::assertContains('login', $actions);
     }
+
+    public function testAuditLogIsRestrictedToAdmins(): void
+    {
+        $this->login('commerce@synapse.demo');
+        $this->client->request('GET', '/api/audit');
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testRecentActivityIsHiddenFromNonAdmins(): void
+    {
+        $this->login('commerce@synapse.demo');
+        $this->client->request('GET', '/api/dashboard');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame([], $this->json()['recentActivity']);
+    }
 }

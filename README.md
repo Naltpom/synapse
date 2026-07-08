@@ -88,7 +88,11 @@ Pour un outil interne dans une société de cybersécurité, la démo applique p
 
 - Authentification par session (`json_login`), hashage automatique des mots de passe
   (algorithme au meilleur standard courant via le composant Security) ;
-- API intégralement derrière authentification (`access_control`), 401 JSON propres ;
+- **Anti brute-force** : `login_throttling` (5 tentatives / identifiant+IP / 15 min) ;
+- API intégralement derrière authentification (`access_control`), 401 JSON propres,
+  cookie de session `HttpOnly` + `SameSite=Lax` ; **journal d'audit réservé à ROLE_ADMIN**
+  (dans l'API comme dans l'extrait du dashboard) ;
+- **Content-Security-Policy stricte** (tout est same-origin, y compris les polices) ;
 - **Journal d'audit inaltérable côté applicatif** alimenté par listener Doctrine :
   créations, modifications (avec diff), suppressions, connexions et tentatives échouées —
   champs sensibles masqués ;
@@ -102,7 +106,7 @@ Pour un outil interne dans une société de cybersécurité, la démo applique p
 | Vérification | Outil | État |
 |---|---|---|
 | Analyse statique API | phpstan niveau 6 | 0 erreur |
-| Tests fonctionnels API | PHPUnit (auth, dashboard, CRM, audit) | 9 tests, 49 assertions |
+| Tests fonctionnels API | PHPUnit (auth, RBAC, dashboard, CRM, audit) | 11 tests |
 | Types front | vue-tsc strict | 0 erreur |
 | CI | GitHub Actions (api + app + build Docker) | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
 

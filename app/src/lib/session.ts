@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { api } from './api'
 
 export interface SessionUser {
@@ -9,6 +9,8 @@ export interface SessionUser {
 }
 
 export const currentUser = ref<SessionUser | null>(null)
+
+export const isAdmin = computed(() => currentUser.value?.roles.includes('ROLE_ADMIN') ?? false)
 
 let checked = false
 

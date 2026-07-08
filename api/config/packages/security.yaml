@@ -21,12 +21,19 @@ security:
                 check_path: api_login
                 username_path: email
                 password_path: password
+            # Anti brute-force : 5 tentatives par identifiant+IP, compteur remis à zéro
+            # à chaque connexion réussie.
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             logout:
                 path: api_logout
 
     # Note: Only the *first* matching rule is applied
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        # Le journal d'audit expose IP et activité des collaborateurs : direction uniquement.
+        - { path: ^/api/audit, roles: ROLE_ADMIN }
         - { path: ^/api, roles: ROLE_USER }
 
 when@test:
