@@ -1,12 +1,24 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { currentUser, isAdmin, logout } from '@/lib/session'
 import { navCounters, refreshNavCounters } from '@/lib/nav'
-import { openAssistant } from '@/lib/assistant'
+import { closeAssistant, openAssistant, toggleAssistant } from '@/lib/assistant'
 import SynapseMark from './SynapseMark.vue'
+import AssistantPalette from './AssistantPalette.vue'
 
 const route = useRoute()
+
+function onKeydown(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    toggleAssistant()
+  }
+  if (e.key === 'Escape') closeAssistant()
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
 interface NavItem {
   to: string
@@ -149,5 +161,7 @@ onMounted(refreshNavCounters)
         <router-view />
       </main>
     </div>
+
+    <AssistantPalette />
   </div>
 </template>
