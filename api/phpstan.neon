@@ -1,0 +1,19 @@
+parameters:
+    level: 6
+    paths:
+        - src
+    excludePaths:
+        # Code du skeleton Symfony, laissé tel quel.
+        - src/Kernel.php
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Faux positifs Doctrine : $id est assigné par réflexion à l'insertion,
+        # et certaines propriétés ne sont lues que par l'ORM (hydratation/persistance).
+        -
+            identifier: property.unusedType
+            paths:
+                - src/Module/*/Entity/*
+        -
+            identifier: property.onlyWritten
+            paths:
+                - src/Module/*/Entity/*
