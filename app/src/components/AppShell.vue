@@ -123,8 +123,14 @@ onMounted(refreshNavCounters)
             <p class="truncate text-[11px] text-white/45">{{ currentUser?.jobTitle }}</p>
           </div>
         </div>
+        <router-link
+          to="/securite"
+          class="mt-2.5 block text-center text-[12px] text-white/45 transition-colors hover:text-white"
+        >
+          Ma sécurité
+        </router-link>
         <button
-          class="mt-3 w-full rounded-md border border-white/15 py-1.5 text-[12.5px] text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+          class="mt-2 w-full rounded-md border border-white/15 py-1.5 text-[12.5px] text-white/70 transition-colors hover:bg-white/5 hover:text-white"
           @click="logout"
         >
           Se déconnecter
