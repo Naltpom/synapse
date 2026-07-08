@@ -26,7 +26,7 @@ onMounted(async () => {
 
 <template>
   <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-    <article v-for="project in projects" :key="project.id" class="rounded-lg border border-ink/8 bg-white p-4">
+    <article v-for="project in projects" :key="project.id" class="rounded-lg border border-ink/8 bg-surface p-4">
       <div class="flex items-start justify-between gap-2">
         <div>
           <h2 class="text-[14.5px] font-semibold">{{ project.name }}</h2>

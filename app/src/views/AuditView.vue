@@ -41,7 +41,7 @@ const actionColors: Record<string, string> = {
 </script>
 
 <template>
-  <div class="rounded-lg bg-ink p-5 text-white">
+  <div class="rounded-lg bg-shell p-5 text-white">
     <div class="mb-4 flex items-center justify-between">
       <p class="text-[13px] text-white/55">
         Chaque écriture est journalisée automatiquement : acteur, action, objet, diff et adresse IP.

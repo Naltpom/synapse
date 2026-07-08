@@ -54,7 +54,7 @@ const hovered = ref<number | null>(null)
     <!-- Infobulle -->
     <div
       v-if="hovered !== null"
-      class="pointer-events-none absolute -top-2 rounded-md bg-ink px-2.5 py-1.5 text-[12px] text-white shadow-lg"
+      class="pointer-events-none absolute -top-2 rounded-md bg-shell px-2.5 py-1.5 text-[12px] text-white shadow-lg"
       :style="{ left: `${((hovered + 0.5) / bars.length) * 100}%`, transform: 'translateX(-50%)' }"
     >
       <span class="text-white/60">{{ monthLabel(bars[hovered].month) }} ·</span>

@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { currentUser, isAdmin, isManager, logout } from '@/lib/session'
 import { navCounters, refreshNavCounters } from '@/lib/nav'
 import { closeAssistant, openAssistant, toggleAssistant } from '@/lib/assistant'
+import { darkMode, toggleTheme } from '@/lib/theme'
 import SynapseMark from './SynapseMark.vue'
 import AssistantPalette from './AssistantPalette.vue'
 
@@ -80,7 +81,7 @@ onMounted(refreshNavCounters)
 
 <template>
   <div class="flex min-h-screen">
-    <aside class="sticky top-0 flex h-screen w-56 flex-none flex-col bg-ink text-white">
+    <aside class="sticky top-0 flex h-screen w-56 flex-none flex-col bg-shell text-white">
       <div class="flex items-center gap-2.5 px-5 pt-[22px] pb-[26px]">
         <SynapseMark :size="30" class="text-white" />
         <div>
@@ -130,12 +131,21 @@ onMounted(refreshNavCounters)
             <p class="truncate text-[11px] text-white/45">{{ currentUser?.jobTitle }}</p>
           </div>
         </div>
-        <router-link
-          to="/securite"
-          class="mt-2.5 block text-center text-[12px] text-white/45 transition-colors hover:text-white"
-        >
-          Ma sécurité
-        </router-link>
+        <div class="mt-2.5 flex items-center justify-center gap-3">
+          <router-link
+            to="/securite"
+            class="text-[12px] text-white/45 transition-colors hover:text-white"
+          >
+            Ma sécurité
+          </router-link>
+          <button
+            class="text-[13px] text-white/45 transition-colors hover:text-white"
+            :aria-label="darkMode ? 'Passer en mode clair' : 'Passer en mode sombre'"
+            @click="toggleTheme"
+          >
+            {{ darkMode ? '☀' : '☾' }}
+          </button>
+        </div>
         <button
           class="mt-2 w-full rounded-md border border-white/15 py-1.5 text-[12.5px] text-white/70 transition-colors hover:bg-white/5 hover:text-white"
           @click="logout"
@@ -146,7 +156,7 @@ onMounted(refreshNavCounters)
     </aside>
 
     <div class="flex min-w-0 flex-1 flex-col">
-      <header class="bg-ink text-white">
+      <header class="bg-shell text-white">
         <div class="flex items-center justify-between gap-5 px-8 py-5">
           <div>
             <h1 class="font-display text-xl font-semibold tracking-tight">{{ route.meta.title }}</h1>
@@ -171,7 +181,11 @@ onMounted(refreshNavCounters)
       </header>
 
       <main class="flex-1 px-8 py-6">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <Transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </Transition>
+        </router-view>
       </main>
     </div>
 

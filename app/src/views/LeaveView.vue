@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { api } from '@/lib/api'
+import Skeleton from '@/components/Skeleton.vue'
 import { currentUser } from '@/lib/session'
 import { refreshNavCounters } from '@/lib/nav'
 
@@ -89,7 +90,7 @@ function provenance(leave: Leave): string {
 const cellClasses: Record<CalendarRow['cells'][number]['state'], string> = {
   mission: 'bg-primary',
   conge_valide: 'bg-warn',
-  conge_attente: 'bg-white border-[1.5px] border-dashed border-warn',
+  conge_attente: 'bg-surface border-[1.5px] border-dashed border-warn',
   weekend: 'bg-ink/3',
   dispo: 'bg-ink/6',
 }
@@ -98,7 +99,7 @@ const cellClasses: Record<CalendarRow['cells'][number]['state'], string> = {
 <template>
   <div class="grid items-start gap-[22px] xl:grid-cols-[1fr_380px]">
     <!-- Calendrier d'équipe -->
-    <section class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <h2 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">
         {{ monthTitle }}
       </h2>
@@ -126,15 +127,15 @@ const cellClasses: Record<CalendarRow['cells'][number]['state'], string> = {
         <div class="mt-3.5 flex gap-4 text-[11px] text-ink/50">
           <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] bg-primary" />Mission</span>
           <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] bg-warn" />Congé validé</span>
-          <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] border-[1.5px] border-dashed border-warn bg-white" />Congé en attente</span>
+          <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] border-[1.5px] border-dashed border-warn bg-surface" />Congé en attente</span>
           <span><span class="mr-[5px] inline-block h-[9px] w-[9px] rounded-[2px] bg-ink/6" />Disponible</span>
         </div>
       </div>
-      <p v-else class="p-[18px] text-[13px] text-ink/45">Chargement du calendrier…</p>
+      <div v-else class="p-[18px]"><Skeleton :lines="6" /></div>
     </section>
 
     <!-- Validations en attente -->
-    <aside class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <aside class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <div class="flex items-center justify-between border-b border-ink/7 px-[18px] py-4">
         <h2 class="font-display text-[15px] font-semibold tracking-tight">Validations en attente</h2>
         <span class="tnum rounded-[9px] bg-warn/10 px-2 py-0.5 font-mono text-[11px] font-medium text-warn">{{ pending.length }}</span>

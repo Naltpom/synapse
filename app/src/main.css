@@ -11,6 +11,9 @@
   --color-ink: #181d27;
   --color-ink-2: #242b3a;
   --color-cloud: #eef2f6;
+  /* Surfaces : shell = toujours sombre (sidebar, header, terminal) ; surface = cartes. */
+  --color-shell: #181d27;
+  --color-surface: #ffffff;
   --color-alert: #ed1c24;
   --color-ok: #0e8a4f;
   --color-warn: #b45309;
@@ -18,6 +21,20 @@
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Mode sombre : les tokens s'inversent, la coque reste sombre. */
+.dark {
+  --color-cloud: #0f131b;
+  --color-surface: #161c28;
+  --color-ink: #e7ebf3;
+  --color-ink-2: #cdd4e0;
+  --color-primary-soft: #142650;
+  --color-primary-strong: #6b9aff;
+  /* Statuts éclaircis pour rester lisibles sur les surfaces sombres. */
+  --color-ok: #3ecf8e;
+  --color-warn: #e8a33d;
+  --color-alert: #ff7076;
 }
 
 html {
@@ -34,6 +51,16 @@ html {
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Transition de route */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 150ms ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

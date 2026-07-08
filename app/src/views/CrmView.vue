@@ -81,7 +81,7 @@ async function changeStage(opportunity: Opportunity, stage: string) {
   <div>
     <!-- Onglets + actions -->
     <div class="mb-5 flex items-center justify-between">
-      <div class="flex gap-1 rounded-md border border-ink/10 bg-white p-1">
+      <div class="flex gap-1 rounded-md border border-ink/10 bg-surface p-1">
         <button
           v-for="t in (['clients', 'opportunities'] as const)"
           :key="t"
@@ -99,7 +99,7 @@ async function changeStage(opportunity: Opportunity, stage: string) {
           v-model="search"
           type="search"
           placeholder="Rechercher un client…"
-          class="w-56 rounded-md border border-ink/12 bg-white px-3 py-1.5 text-[13px] focus:border-primary"
+          class="w-56 rounded-md border border-ink/12 bg-surface px-3 py-1.5 text-[13px] focus:border-primary"
         />
         <button
           v-if="tab === 'clients'"
@@ -112,7 +112,7 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     </div>
 
     <!-- Clients -->
-    <div v-if="tab === 'clients'" class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <div v-if="tab === 'clients'" class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <table class="w-full text-[13.5px]">
         <thead>
           <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
@@ -146,7 +146,7 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     </div>
 
     <!-- Opportunités -->
-    <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <table class="w-full text-[13.5px]">
         <thead>
           <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
@@ -168,7 +168,7 @@ async function changeStage(opportunity: Opportunity, stage: string) {
             <td class="px-[18px] py-[11px]">
               <select
                 :value="opp.stage"
-                class="rounded-md border border-ink/12 bg-white px-2 py-1 text-[12.5px]"
+                class="rounded-md border border-ink/12 bg-surface px-2 py-1 text-[12.5px]"
                 @change="changeStage(opp, ($event.target as HTMLSelectElement).value)"
               >
                 <option v-for="stage in stages" :key="stage" :value="stage">{{ stage }}</option>
@@ -180,8 +180,8 @@ async function changeStage(opportunity: Opportunity, stage: string) {
     </div>
 
     <!-- Création client -->
-    <div v-if="showCreate" class="fixed inset-0 z-20 flex items-center justify-center bg-ink/30" @click.self="showCreate = false">
-      <form class="w-full max-w-sm rounded-lg bg-white p-6 shadow-2xl" @submit.prevent="createClient">
+    <div v-if="showCreate" class="fixed inset-0 z-20 flex items-center justify-center bg-shell/40" @click.self="showCreate = false">
+      <form class="w-full max-w-sm rounded-lg bg-surface p-6 shadow-2xl" @submit.prevent="createClient">
         <h2 class="mb-5 font-display text-lg font-semibold tracking-tight">Ajouter un client</h2>
         <div class="space-y-3.5">
           <div v-for="(label, field) in { name: 'Nom', sector: 'Secteur', city: 'Ville' }" :key="field">
@@ -195,7 +195,7 @@ async function changeStage(opportunity: Opportunity, stage: string) {
           </div>
           <div>
             <label for="status" class="mb-1 block text-[13px] font-medium text-ink/75">Statut</label>
-            <select id="status" v-model="form.status" class="w-full rounded-md border border-ink/12 bg-white px-3 py-2 text-[13.5px]">
+            <select id="status" v-model="form.status" class="w-full rounded-md border border-ink/12 bg-surface px-3 py-2 text-[13.5px]">
               <option value="prospect">Prospect</option>
               <option value="actif">Actif</option>
               <option value="inactif">Inactif</option>

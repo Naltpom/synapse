@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { api } from '@/lib/api'
+import Skeleton from '@/components/Skeleton.vue'
 
 interface MeSecurity {
   session: { email: string; fullName: string; jobTitle: string; roles: string[] }
@@ -26,7 +27,7 @@ const roleLabels: Record<string, string> = {
 <template>
   <div v-if="data" class="grid items-start gap-[22px] xl:grid-cols-[1fr_380px]">
     <!-- Historique de connexion -->
-    <section class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <div class="border-b border-ink/7 px-[18px] py-4">
         <h2 class="font-display text-[15px] font-semibold tracking-tight">Mes dernières connexions</h2>
         <p class="mt-0.5 text-[12.5px] text-ink/50">Extraites du journal d'audit — signalez toute connexion que vous ne reconnaissez pas.</p>
@@ -50,7 +51,7 @@ const roleLabels: Record<string, string> = {
 
     <div class="flex flex-col gap-[22px]">
       <!-- Session actuelle -->
-      <section class="rounded-lg border border-ink/8 bg-white p-[18px]">
+      <section class="rounded-lg border border-ink/8 bg-surface p-[18px]">
         <h2 class="font-display text-[15px] font-semibold tracking-tight">Session actuelle</h2>
         <dl class="mt-3 space-y-2 text-[13px]">
           <div class="flex justify-between gap-3">
@@ -80,7 +81,7 @@ const roleLabels: Record<string, string> = {
       </section>
 
       <!-- MFA / SSO teaser -->
-      <section class="rounded-lg border border-dashed border-ink/15 bg-white p-[18px]">
+      <section class="rounded-lg border border-dashed border-ink/15 bg-surface p-[18px]">
         <div class="flex items-center justify-between">
           <h2 class="font-display text-[15px] font-semibold tracking-tight">Authentification renforcée</h2>
           <span class="rounded-full bg-ink/6 px-2.5 py-0.5 text-[11px] font-medium text-ink/55">Bientôt</span>
@@ -93,5 +94,5 @@ const roleLabels: Record<string, string> = {
     </div>
   </div>
 
-  <p v-else class="py-16 text-center text-[13.5px] text-ink/45">Chargement…</p>
+  <div v-else class="rounded-lg border border-ink/8 bg-surface p-6"><Skeleton :lines="6" /></div>
 </template>

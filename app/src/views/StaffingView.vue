@@ -67,7 +67,7 @@ const allocationTone = (allocation: number) =>
 
 <template>
   <div>
-    <div class="mb-5 flex gap-1 rounded-md border border-ink/10 bg-white p-1 w-fit">
+    <div class="mb-5 flex gap-1 rounded-md border border-ink/10 bg-surface p-1 w-fit">
       <button
         v-for="t in (['consultants', 'missions'] as const)"
         :key="t"
@@ -81,7 +81,7 @@ const allocationTone = (allocation: number) =>
 
     <!-- Consultants -->
     <div v-if="tab === 'consultants'" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <article v-for="consultant in consultants" :key="consultant.id" class="rounded-lg border border-ink/8 bg-white p-4">
+      <article v-for="consultant in consultants" :key="consultant.id" class="rounded-lg border border-ink/8 bg-surface p-4">
         <div class="flex items-start justify-between gap-2">
           <div>
             <h2 class="text-[14.5px] font-semibold">{{ consultant.fullName }}</h2>
@@ -111,7 +111,7 @@ const allocationTone = (allocation: number) =>
     </div>
 
     <!-- Missions -->
-    <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <div v-else class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <table class="w-full text-[13.5px]">
         <thead>
           <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">
@@ -144,8 +144,8 @@ const allocationTone = (allocation: number) =>
     </div>
 
     <!-- Volet mission -->
-    <div v-if="selectedMission" class="fixed inset-0 z-20 flex justify-end bg-ink/30" @click.self="selectedMission = null">
-      <div class="h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl">
+    <div v-if="selectedMission" class="fixed inset-0 z-20 flex justify-end bg-shell/40" @click.self="selectedMission = null">
+      <div class="h-full w-full max-w-md overflow-y-auto bg-surface p-6 shadow-2xl">
         <div class="mb-1 flex items-start justify-between">
           <h2 class="font-display text-xl font-semibold tracking-tight">{{ selectedMission.title }}</h2>
           <button class="rounded p-1 text-ink/40 hover:text-ink" aria-label="Fermer" @click="selectedMission = null">✕</button>

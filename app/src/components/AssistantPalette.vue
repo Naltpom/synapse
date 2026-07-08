@@ -104,10 +104,10 @@ function goTarget() {
 <template>
   <div
     v-if="assistantOpen"
-    class="fixed inset-0 z-30 flex justify-center bg-ink/50 backdrop-blur-[2px]"
+    class="fixed inset-0 z-30 flex justify-center bg-shell/50 backdrop-blur-[2px]"
     @click.self="closeAssistant"
   >
-    <div class="assistant-modal mt-[90px] h-fit w-[680px] max-w-[92vw] overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(24,29,39,.35)]" role="dialog" aria-label="Assistant Synapse">
+    <div class="assistant-modal mt-[90px] h-fit w-[680px] max-w-[92vw] overflow-hidden rounded-xl bg-surface shadow-[0_24px_60px_rgba(24,29,39,.35)]" role="dialog" aria-label="Assistant Synapse">
       <!-- Header -->
       <div class="flex items-center gap-2.5 border-b border-ink/8 px-[18px] py-3.5">
         <SynapseMark :size="20" animated class="text-primary" />
@@ -186,7 +186,7 @@ function goTarget() {
         </div>
 
         <!-- Trace MCP -->
-        <div class="rounded-lg bg-ink px-3.5 py-3 text-white">
+        <div class="rounded-lg bg-shell px-3.5 py-3 text-white">
           <p class="mb-2 text-[10px] uppercase tracking-[0.12em] text-white/40">Outils MCP appelés</p>
           <div class="flex flex-col gap-[5px] font-mono text-[12px]">
             <div v-for="step in activeScenario.steps" :key="step.tool" class="flex flex-wrap gap-2.5">

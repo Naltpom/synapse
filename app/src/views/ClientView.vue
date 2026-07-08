@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { api } from '@/lib/api'
+import Skeleton from '@/components/Skeleton.vue'
 import { euro, date } from '@/lib/format'
 import StatusBadge from '@/components/StatusBadge.vue'
 
@@ -43,21 +44,21 @@ onMounted(async () => {
 
     <!-- KPIs -->
     <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">CA facturé</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight">{{ euro(data.kpis.billedTotal) }}</p>
       </div>
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">Encaissé</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight">{{ euro(data.kpis.paidTotal) }}</p>
       </div>
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em]" :class="data.kpis.overdueAmount > 0 ? 'text-alert' : 'text-ink/45'">En retard</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight" :class="{ 'text-alert': data.kpis.overdueAmount > 0 }">
           {{ data.kpis.overdueAmount > 0 ? euro(data.kpis.overdueAmount) : '—' }}
         </p>
       </div>
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">Pipeline pondéré</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight">{{ data.weightedPipeline > 0 ? euro(data.weightedPipeline) : '—' }}</p>
       </div>
@@ -66,7 +67,7 @@ onMounted(async () => {
     <div class="grid items-start gap-[22px] xl:grid-cols-[1fr_380px]">
       <div class="flex min-w-0 flex-col gap-[22px]">
         <!-- Missions -->
-        <section class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+        <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
           <h3 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">
             Missions <span class="text-ink/40">({{ data.missions.length }})</span>
           </h3>
@@ -84,7 +85,7 @@ onMounted(async () => {
         </section>
 
         <!-- Factures -->
-        <section class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+        <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
           <h3 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">
             Factures <span class="text-ink/40">({{ data.invoices.length }})</span>
           </h3>
@@ -104,7 +105,7 @@ onMounted(async () => {
 
       <div class="flex flex-col gap-[22px]">
         <!-- Contacts -->
-        <section class="rounded-lg border border-ink/8 bg-white">
+        <section class="rounded-lg border border-ink/8 bg-surface">
           <h3 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">Contacts</h3>
           <div v-for="contact in data.contacts" :key="contact.id" class="border-b border-ink/6 px-[18px] py-3 last:border-0">
             <p class="text-[13.5px] font-medium">{{ contact.firstName }} {{ contact.lastName }} <span class="font-normal text-ink/50">· {{ contact.role }}</span></p>
@@ -113,7 +114,7 @@ onMounted(async () => {
         </section>
 
         <!-- Opportunités -->
-        <section class="rounded-lg border border-ink/8 bg-white">
+        <section class="rounded-lg border border-ink/8 bg-surface">
           <h3 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">Opportunités</h3>
           <div v-for="opp in data.opportunities" :key="opp.id" class="border-b border-ink/6 px-[18px] py-3 last:border-0">
             <div class="flex items-center justify-between gap-2">
@@ -128,5 +129,5 @@ onMounted(async () => {
     </div>
   </div>
 
-  <p v-else class="py-16 text-center text-[13.5px] text-ink/45">Chargement de la fiche client…</p>
+  <div v-else class="rounded-lg border border-ink/8 bg-surface p-6"><Skeleton :lines="8" /></div>
 </template>

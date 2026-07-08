@@ -54,6 +54,14 @@ npm run dev        # http://127.0.0.1:4300 (proxy /api → :8000)
   action — l'UI est prête à recevoir le backend LLM + MCP (interface `AssistantEngine`).
 - **Congés & validations** : calendrier d'équipe croisant missions et absences, workflow
   d'approbation réservé aux managers, provenance « créée via assistant » tracée.
+- **CRA / feuille de temps** : grille semaine consultant × activité (0 / ½ / 1, plafond
+  d'une journée), soumission puis validation manager, saisie verrouillée après soumission.
+- **Marges & rentabilité** (managers/direction) : CA facturé vs coût estimé des
+  affectations, marge par mission et par client, méthode de calcul affichée.
+- **Fiche client 360°** : missions, factures, contacts et pipeline du client en une page.
+- **Recherche globale** dans la palette ⌘K (clients, consultants, missions, factures) ;
+- **Ma sécurité** : chacun voit son historique de connexions (échecs inclus) ;
+- **Mode sombre** (bascule persistée), skeletons de chargement, transitions de route.
 - **CRM** : clients, contacts, opportunités par practice ; création de client et
   changement d'étape d'opportunité (écritures journalisées).
 - **Staffing** : consultants (grade, practice, compétences, charge), missions et équipes.
@@ -75,7 +83,8 @@ synapse/
 │       ├── Staffing/           consultants, missions, affectations
 │       ├── Project/            suivi de delivery
 │       ├── Billing/            factures
-│       └── Hr/                 congés et validations
+│       ├── Hr/                 congés et validations
+│       └── Timesheet/          CRA / feuilles de temps
 ├── app/                        Vue 3 + TS + Vite + Tailwind 4 (SPA)
 ├── compose.yaml                db (PostgreSQL) · api (FrankenPHP) · web (nginx, port 8082)
 └── docs/adr/                   décisions d'architecture
@@ -113,7 +122,7 @@ Pour un outil interne dans une société de cybersécurité, la démo applique p
 | Vérification | Outil | État |
 |---|---|---|
 | Analyse statique API | phpstan niveau 6 | 0 erreur |
-| Tests fonctionnels API | PHPUnit (auth, RBAC, dashboard, CRM, RH, audit) | 23 tests |
+| Tests fonctionnels API | PHPUnit (auth, RBAC, dashboard, CRM, RH, CRA, marges, audit) | 39 tests |
 | Types front | vue-tsc strict | 0 erreur |
 | CI | GitHub Actions (api + app + build Docker) | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
 

@@ -37,7 +37,7 @@ async function submit() {
 <template>
   <div class="flex min-h-screen">
     <!-- Panneau de marque -->
-    <div class="hidden flex-col justify-between bg-ink p-10 text-white lg:flex lg:w-[44%]">
+    <div class="hidden flex-col justify-between bg-shell p-10 text-white lg:flex lg:w-[44%]">
       <div class="flex items-center gap-2.5">
         <SynapseMark :size="30" class="text-white" />
         <span class="font-display text-lg font-semibold tracking-tight">Synapse</span>
@@ -79,7 +79,7 @@ async function submit() {
               type="email"
               required
               autocomplete="username"
-              class="w-full rounded-md border border-ink/15 bg-white px-3 py-2 text-[14px] transition-colors focus:border-primary"
+              class="w-full rounded-md border border-ink/15 bg-surface px-3 py-2 text-[14px] transition-colors focus:border-primary"
             />
           </div>
           <div>
@@ -90,7 +90,7 @@ async function submit() {
               type="password"
               required
               autocomplete="current-password"
-              class="w-full rounded-md border border-ink/15 bg-white px-3 py-2 text-[14px] transition-colors focus:border-primary"
+              class="w-full rounded-md border border-ink/15 bg-surface px-3 py-2 text-[14px] transition-colors focus:border-primary"
             />
           </div>
 
@@ -105,7 +105,7 @@ async function submit() {
           </button>
         </form>
 
-        <div class="mt-8 rounded-md border border-ink/10 bg-white p-4">
+        <div class="mt-8 rounded-md border border-ink/10 bg-surface p-4">
           <p class="text-[12px] font-medium uppercase tracking-[0.08em] text-ink/45">Comptes de démonstration</p>
           <div class="mt-2.5 flex flex-wrap gap-2">
             <button

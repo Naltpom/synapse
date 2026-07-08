@@ -44,7 +44,7 @@ watch(statusFilter, reload)
 <template>
   <div>
     <div class="mb-5 flex items-center justify-between">
-      <div class="flex gap-1 rounded-md border border-ink/10 bg-white p-1">
+      <div class="flex gap-1 rounded-md border border-ink/10 bg-surface p-1">
         <button
           v-for="filter in filters"
           :key="filter.value"
@@ -60,7 +60,7 @@ watch(statusFilter, reload)
       </p>
     </div>
 
-    <div class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+    <div class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
       <table class="w-full text-[13.5px]">
         <thead>
           <tr class="border-b border-ink/8 text-left text-[11.5px] uppercase tracking-[0.06em] text-ink/45">

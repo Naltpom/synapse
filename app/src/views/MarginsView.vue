@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { api, ApiError } from '@/lib/api'
+import Skeleton from '@/components/Skeleton.vue'
 import { euro, euroCompact } from '@/lib/format'
 import StatusBadge from '@/components/StatusBadge.vue'
 
@@ -36,28 +37,28 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="forbidden" class="rounded-lg border border-ink/8 bg-white p-10 text-center text-[13.5px] text-ink/45">
+  <div v-if="forbidden" class="rounded-lg border border-ink/8 bg-surface p-10 text-center text-[13.5px] text-ink/45">
     Les marges sont réservées aux managers et à la direction.
   </div>
 
   <div v-else-if="data">
     <!-- Totaux -->
     <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">CA facturé</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight">{{ euroCompact(data.totals.revenue) }}</p>
       </div>
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">Coût estimé</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight">{{ euroCompact(data.totals.cost) }}</p>
       </div>
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">Marge brute</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight" :class="data.totals.margin < 0 ? 'text-alert' : 'text-ok'">
           {{ euroCompact(data.totals.margin) }}
         </p>
       </div>
-      <div class="min-w-0 rounded-lg border border-ink/8 bg-white p-4">
+      <div class="min-w-0 rounded-lg border border-ink/8 bg-surface p-4">
         <p class="text-[11.5px] font-medium uppercase tracking-[0.08em] text-ink/45">Taux de marge</p>
         <p class="tnum mt-1.5 font-display text-[24px] font-semibold leading-none tracking-tight">
           {{ data.totals.marginRate !== null ? `${data.totals.marginRate} %` : '—' }}
@@ -67,7 +68,7 @@ onMounted(async () => {
 
     <div class="grid items-start gap-[22px] xl:grid-cols-[1fr_380px]">
       <!-- Marge par mission -->
-      <section class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+      <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
         <h2 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">Marge par mission</h2>
         <table class="w-full text-[13.5px]">
           <thead>
@@ -99,7 +100,7 @@ onMounted(async () => {
 
       <!-- Par client + méthodo -->
       <div class="flex flex-col gap-[22px]">
-        <section class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+        <section class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
           <h2 class="border-b border-ink/7 px-[18px] py-4 font-display text-[15px] font-semibold tracking-tight">Par client</h2>
           <div v-for="client in data.clients" :key="client.clientName" class="flex items-baseline justify-between border-b border-ink/6 px-[18px] py-2.5 last:border-0">
             <span class="truncate text-[13px] font-medium">{{ client.clientName }}</span>
@@ -110,7 +111,7 @@ onMounted(async () => {
           </div>
         </section>
 
-        <section class="rounded-lg border border-dashed border-ink/15 bg-white p-[18px]">
+        <section class="rounded-lg border border-dashed border-ink/15 bg-surface p-[18px]">
           <h2 class="font-display text-[14px] font-semibold tracking-tight">Méthode de calcul</h2>
           <p class="mt-2 text-[12.5px] leading-relaxed text-ink/55">
             Coût estimé = jours ouvrés écoulés de chaque affectation × taux d'allocation ×
@@ -122,5 +123,5 @@ onMounted(async () => {
     </div>
   </div>
 
-  <p v-else class="py-16 text-center text-[13.5px] text-ink/45">Chargement des marges…</p>
+  <div v-else class="rounded-lg border border-ink/8 bg-surface p-6"><Skeleton :lines="8" /></div>
 </template>

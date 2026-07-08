@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/lib/api'
+import Skeleton from '@/components/Skeleton.vue'
 import { isAdmin } from '@/lib/session'
 import { euroCompact } from '@/lib/format'
 import Sparkline from '@/components/Sparkline.vue'
@@ -118,7 +119,7 @@ const actionColors: Record<string, string> = {
     <div class="grid items-start gap-[22px] xl:grid-cols-[1fr_380px]">
       <div class="flex min-w-0 flex-col gap-[22px]">
         <!-- Facturation émise -->
-        <section class="rounded-lg border border-ink/8 bg-white p-5">
+        <section class="rounded-lg border border-ink/8 bg-surface p-5">
           <div class="flex items-baseline justify-between">
             <h2 class="font-display text-[15px] font-semibold tracking-tight">Facturation émise — 12 mois</h2>
             <div class="flex gap-3 text-[11.5px] text-ink/50">
@@ -130,13 +131,13 @@ const actionColors: Record<string, string> = {
         </section>
 
         <!-- Occupation par practice -->
-        <section class="rounded-lg border border-ink/8 bg-white p-5">
+        <section class="rounded-lg border border-ink/8 bg-surface p-5">
           <h2 class="mb-3.5 font-display text-[15px] font-semibold tracking-tight">Occupation par practice</h2>
           <PracticeBars :rows="data.practiceDistribution" />
         </section>
 
         <!-- Feed audit condensé (direction uniquement) -->
-        <section v-if="isAdmin && data.recentActivity.length" class="rounded-lg bg-ink px-5 py-4 text-white">
+        <section v-if="isAdmin && data.recentActivity.length" class="rounded-lg bg-shell px-5 py-4 text-white">
           <div class="flex flex-wrap items-center gap-3.5 font-mono text-[12px] text-white/70">
             <template v-for="(entry, i) in data.recentActivity" :key="entry.id">
               <span v-if="i > 0" class="text-white/30">·</span>
@@ -151,7 +152,7 @@ const actionColors: Record<string, string> = {
       </div>
 
       <!-- À traiter -->
-      <aside class="overflow-hidden rounded-lg border border-ink/8 bg-white">
+      <aside class="overflow-hidden rounded-lg border border-ink/8 bg-surface">
         <div class="flex items-center justify-between border-b border-ink/7 px-[18px] py-4">
           <h2 class="font-display text-[15px] font-semibold tracking-tight">À traiter</h2>
           <span class="tnum rounded-[9px] bg-primary/8 px-2 py-0.5 font-mono text-[11px] font-medium text-primary-strong">{{ data.todos.length }}</span>
@@ -176,5 +177,5 @@ const actionColors: Record<string, string> = {
     </div>
   </div>
 
-  <p v-else class="py-16 text-center text-[13.5px] text-ink/45">Chargement de la vue d'ensemble…</p>
+  <div v-else class="rounded-lg border border-ink/8 bg-surface p-6"><Skeleton :lines="8" /></div>
 </template>
