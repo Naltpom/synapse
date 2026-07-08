@@ -9,6 +9,8 @@ use App\Module\Billing\Enum\InvoiceStatus;
 use App\Module\Core\Entity\AuditLog;
 use App\Module\Crm\Entity\Opportunity;
 use App\Module\Crm\Enum\OpportunityStage;
+use App\Module\Hr\Entity\LeaveRequest;
+use App\Module\Hr\Enum\LeaveStatus;
 use App\Module\Project\Entity\Project;
 use App\Module\Project\Enum\ProjectHealth;
 use App\Module\Staffing\Entity\Consultant;
@@ -322,7 +324,19 @@ final class DashboardController extends AbstractController
             ];
         }
 
-        // Congés à valider : branché sur le module Hr à l'étape Congés.
+        // Congés à valider.
+        /** @var list<LeaveRequest> $pendingLeaves */
+        $pendingLeaves = $this->em->getRepository(LeaveRequest::class)->findBy(['status' => LeaveStatus::PendingApproval]);
+        if ([] !== $pendingLeaves) {
+            $names = array_map(static fn (LeaveRequest $l): string => $l->toArray()['consultantName'], array_slice($pendingLeaves, 0, 2));
+            $todos[] = [
+                'severity' => 'info',
+                'title' => sprintf('%d demandes de congé à valider', count($pendingLeaves)),
+                'subtitle' => implode(' et ', $names),
+                'action' => 'Valider',
+                'target' => 'leave',
+            ];
+        }
 
         return $todos;
     }

@@ -44,6 +44,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Module/Billing/Entity'
                 prefix: 'App\Module\Billing\Entity'
                 alias: Billing
+            Hr:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Module/Hr/Entity'
+                prefix: 'App\Module\Hr\Entity'
+                alias: Hr
 
 when@test:
     doctrine:

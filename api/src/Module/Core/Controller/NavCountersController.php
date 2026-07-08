@@ -6,6 +6,8 @@ namespace App\Module\Core\Controller;
 
 use App\Module\Billing\Entity\Invoice;
 use App\Module\Billing\Enum\InvoiceStatus;
+use App\Module\Hr\Entity\LeaveRequest;
+use App\Module\Hr\Enum\LeaveStatus;
 use App\Module\Staffing\Entity\Consultant;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,8 +30,18 @@ final class NavCountersController extends AbstractController
         return $this->json([
             'staffingBench' => $this->benchCount(),
             'billingOverdue' => $this->overdueCount(),
-            'hrPending' => 0, // Branché sur le module Hr à l'étape Congés.
+            'hrPending' => $this->pendingLeaveCount(),
         ]);
+    }
+
+    private function pendingLeaveCount(): int
+    {
+        return (int) $this->em->createQueryBuilder()
+            ->select('COUNT(l.id)')
+            ->from(LeaveRequest::class, 'l')
+            ->where('l.status = :status')
+            ->setParameter('status', LeaveStatus::PendingApproval)
+            ->getQuery()->getSingleScalarResult();
     }
 
     private function benchCount(): int

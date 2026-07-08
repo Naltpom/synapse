@@ -25,6 +25,6 @@ final class NavCountersTest extends ApiTestCase
 
         self::assertSame(4, $counters['staffingBench']);
         self::assertGreaterThanOrEqual(1, $counters['billingOverdue']);
-        self::assertArrayHasKey('hrPending', $counters);
+        self::assertGreaterThanOrEqual(1, $counters['hrPending']);
     }
 }

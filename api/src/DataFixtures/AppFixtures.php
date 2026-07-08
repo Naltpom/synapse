@@ -14,6 +14,8 @@ use App\Module\Crm\Entity\Contact;
 use App\Module\Crm\Entity\Opportunity;
 use App\Module\Crm\Enum\ClientStatus;
 use App\Module\Crm\Enum\OpportunityStage;
+use App\Module\Hr\Entity\LeaveRequest;
+use App\Module\Hr\Enum\LeaveType;
 use App\Module\Project\Entity\Project;
 use App\Module\Project\Enum\ProjectHealth;
 use App\Module\Project\Enum\ProjectStatus;
@@ -60,9 +62,76 @@ final class AppFixtures extends Fixture
         $this->loadAssignments($manager, $missions, $consultants);
         $this->loadProjects($manager, $missions);
         $this->loadInvoices($manager, $clients, $missions);
-        $this->loadAuditSeed($manager);
+        $assistantLeave = $this->loadLeaves($manager, $consultants);
+        // Flush pour disposer de l'identifiant de la demande créée « via assistant ».
+        $manager->flush();
+
+        $this->loadAuditSeed($manager, $assistantLeave);
 
         $manager->flush();
+    }
+
+    /**
+     * @param list<Consultant> $consultants
+     */
+    private function loadLeaves(ObjectManager $manager, array $consultants): LeaveRequest
+    {
+        $today = new \DateTimeImmutable('today');
+        $nextMonday = $today->modify('next monday');
+
+        // La demande « créée via assistant » (scénario ⌘K) : demain + lundi prochain.
+        $assistantLeave = new LeaveRequest(
+            $consultants[0]->getId() ?? 0,
+            $consultants[0]->getFullName(),
+            LeaveType::CongePaye,
+            $today->modify('+1 day'),
+            $nextMonday,
+            2,
+            'mcp',
+            new \DateTimeImmutable('-2 minutes'),
+        );
+        $manager->persist($assistantLeave);
+
+        // Deuxième demande en attente : télétravail exceptionnel.
+        $manager->persist(new LeaveRequest(
+            $consultants[7]->getId() ?? 0,
+            $consultants[7]->getFullName(),
+            LeaveType::Teletravail,
+            $nextMonday->modify('+4 days'),
+            $nextMonday->modify('+4 days'),
+            1,
+            'app',
+            new \DateTimeImmutable('-1 day'),
+        ));
+
+        // Congés déjà validés, visibles dans la fenêtre du calendrier.
+        $approved1 = new LeaveRequest(
+            $consultants[4]->getId() ?? 0,
+            $consultants[4]->getFullName(),
+            LeaveType::CongePaye,
+            $nextMonday->modify('+2 days'),
+            $nextMonday->modify('+3 days'),
+            2,
+            'app',
+            new \DateTimeImmutable('-6 days'),
+        );
+        $approved1->approve('staffing@synapse.demo');
+        $manager->persist($approved1);
+
+        $approved2 = new LeaveRequest(
+            $consultants[2]->getId() ?? 0,
+            $consultants[2]->getFullName(),
+            LeaveType::Rtt,
+            $today->modify('+2 days'),
+            $today->modify('+2 days'),
+            1,
+            'app',
+            new \DateTimeImmutable('-10 days'),
+        );
+        $approved2->approve('direction@synapse.demo');
+        $manager->persist($approved2);
+
+        return $assistantLeave;
     }
 
     private function loadUsers(ObjectManager $manager): void
@@ -434,18 +503,24 @@ final class AppFixtures extends Fixture
     }
 
     /** Quelques entrées d'audit pour que l'écran ne soit pas vide au premier lancement. */
-    private function loadAuditSeed(ObjectManager $manager): void
+    private function loadAuditSeed(ObjectManager $manager, LeaveRequest $assistantLeave): void
     {
         $entries = [
-            ['direction@synapse.demo', 'login', 'Session', null],
-            ['commerce@synapse.demo', 'login', 'Session', null],
-            ['commerce@synapse.demo', 'create', 'Client', '11'],
-            ['commerce@synapse.demo', 'update', 'Opportunity', '4'],
-            ['staffing@synapse.demo', 'login', 'Session', null],
+            ['direction@synapse.demo', 'login', 'Session', null, null],
+            ['commerce@synapse.demo', 'login', 'Session', null, null],
+            ['commerce@synapse.demo', 'create', 'Client', '11', null],
+            ['commerce@synapse.demo', 'update', 'Opportunity', '4', null],
+            ['staffing@synapse.demo', 'login', 'Session', null, null],
+            // L'action de l'assistant (scénario ⌘K) : tracée avec sa provenance MCP.
+            ['assistant (direction@synapse.demo)', 'create', 'LeaveRequest', (string) $assistantLeave->getId(), [
+                'dates' => [$assistantLeave->getStartDate()->format('Y-m-d'), $assistantLeave->getEndDate()->format('Y-m-d')],
+                'status' => 'pending_approval',
+                'source' => 'mcp',
+            ]],
         ];
 
-        foreach ($entries as [$actor, $action, $type, $subjectId]) {
-            $manager->persist(new AuditLog($actor, $action, $type, $subjectId, null, '10.0.0.'.$this->faker->numberBetween(2, 40)));
+        foreach ($entries as [$actor, $action, $type, $subjectId, $changes]) {
+            $manager->persist(new AuditLog($actor, $action, $type, $subjectId, $changes, '10.0.0.'.$this->faker->numberBetween(2, 40)));
         }
     }
 
