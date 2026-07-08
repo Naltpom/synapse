@@ -17,6 +17,7 @@ const router = createRouter({
         { path: 'projets', name: 'projects', component: () => import('./views/ProjectsView.vue'), meta: { title: 'Projets' } },
         { path: 'facturation', name: 'billing', component: () => import('./views/BillingView.vue'), meta: { title: 'Facturation' } },
         { path: 'conges', name: 'leave', component: () => import('./views/LeaveView.vue'), meta: { title: 'Congés & validations' } },
+        { path: 'cra', name: 'cra', component: () => import('./views/CraView.vue'), meta: { title: 'CRA — feuille de temps' } },
         { path: 'audit', name: 'audit', component: () => import('./views/AuditView.vue'), meta: { title: 'Journal d\'audit' } },
         { path: 'securite', name: 'security', component: () => import('./views/SecurityView.vue'), meta: { title: 'Ma sécurité' } },
       ],

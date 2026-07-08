@@ -29,6 +29,10 @@ const registry: Record<string, { label: string; tone: 'ok' | 'warn' | 'alert' | 
   envoyee: { label: 'Envoyée', tone: 'info' },
   payee: { label: 'Payée', tone: 'ok' },
   en_retard: { label: 'En retard', tone: 'alert' },
+  // CRA
+  draft: { label: 'Brouillon', tone: 'neutral' },
+  submitted: { label: 'Soumise', tone: 'warn' },
+  validated: { label: 'Validée', tone: 'ok' },
 }
 
 const entry = registry[props.status] ?? { label: props.status, tone: 'neutral' as const }

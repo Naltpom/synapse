@@ -24,6 +24,9 @@ use App\Module\Staffing\Entity\Consultant;
 use App\Module\Staffing\Entity\Mission;
 use App\Module\Staffing\Enum\ConsultantGrade;
 use App\Module\Staffing\Enum\MissionStatus;
+use App\Module\Timesheet\Entity\TimeEntry;
+use App\Module\Timesheet\Entity\TimesheetWeek;
+use App\Module\Timesheet\Enum\TimeCategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -63,6 +66,7 @@ final class AppFixtures extends Fixture
         $this->loadProjects($manager, $missions);
         $this->loadInvoices($manager, $clients, $missions);
         $assistantLeave = $this->loadLeaves($manager, $consultants);
+        $this->loadTimesheets($manager, $consultants);
         // Flush pour disposer de l'identifiant de la demande créée « via assistant ».
         $manager->flush();
 
@@ -521,6 +525,46 @@ final class AppFixtures extends Fixture
 
         foreach ($entries as [$actor, $action, $type, $subjectId, $changes]) {
             $manager->persist(new AuditLog($actor, $action, $type, $subjectId, $changes, '10.0.0.'.$this->faker->numberBetween(2, 40)));
+        }
+    }
+
+    /**
+     * CRA de la semaine précédente : une semaine soumise (à valider) et une validée.
+     *
+     * @param list<Consultant> $consultants
+     */
+    private function loadTimesheets(ObjectManager $manager, array $consultants): void
+    {
+        $lastMonday = new \DateTimeImmutable('monday last week');
+
+        foreach ([[1, true], [4, false]] as [$index, $submittedOnly]) {
+            $consultant = $consultants[$index];
+            $assignment = $consultant->getAssignments()->first();
+            $mission = false !== $assignment ? $assignment->getMission() : null;
+
+            for ($day = 0; $day < 5; ++$day) {
+                $date = $lastMonday->modify("+{$day} days");
+                if (null !== $mission) {
+                    $manager->persist(new TimeEntry(
+                        $consultant->getId() ?? 0,
+                        $date,
+                        TimeCategory::Mission,
+                        $mission->getId(),
+                        $mission->getTitle(),
+                        4 === $day ? 0.5 : 1.0,
+                    ));
+                    if (4 === $day) {
+                        $manager->persist(new TimeEntry($consultant->getId() ?? 0, $date, TimeCategory::Interne, null, null, 0.5));
+                    }
+                }
+            }
+
+            $week = new TimesheetWeek($consultant->getId() ?? 0, $consultant->getFullName(), $lastMonday);
+            $week->submit();
+            if (!$submittedOnly) {
+                $week->validate('staffing@synapse.demo');
+            }
+            $manager->persist($week);
         }
     }
 

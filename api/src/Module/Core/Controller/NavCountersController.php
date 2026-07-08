@@ -9,6 +9,8 @@ use App\Module\Billing\Enum\InvoiceStatus;
 use App\Module\Hr\Entity\LeaveRequest;
 use App\Module\Hr\Enum\LeaveStatus;
 use App\Module\Staffing\Entity\Consultant;
+use App\Module\Timesheet\Entity\TimesheetWeek;
+use App\Module\Timesheet\Enum\WeekStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,7 +33,18 @@ final class NavCountersController extends AbstractController
             'staffingBench' => $this->benchCount(),
             'billingOverdue' => $this->overdueCount(),
             'hrPending' => $this->pendingLeaveCount(),
+            'craPending' => $this->submittedWeekCount(),
         ]);
+    }
+
+    private function submittedWeekCount(): int
+    {
+        return (int) $this->em->createQueryBuilder()
+            ->select('COUNT(w.id)')
+            ->from(TimesheetWeek::class, 'w')
+            ->where('w.status = :status')
+            ->setParameter('status', WeekStatus::Submitted)
+            ->getQuery()->getSingleScalarResult();
     }
 
     private function pendingLeaveCount(): int

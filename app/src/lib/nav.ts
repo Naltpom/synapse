@@ -5,6 +5,7 @@ export interface NavCounters {
   staffingBench: number
   billingOverdue: number
   hrPending: number
+  craPending: number
 }
 
 export const navCounters = ref<NavCounters | null>(null)

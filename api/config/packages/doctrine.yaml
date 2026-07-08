@@ -50,6 +50,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Module/Hr/Entity'
                 prefix: 'App\Module\Hr\Entity'
                 alias: Hr
+            Timesheet:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Module/Timesheet/Entity'
+                prefix: 'App\Module\Timesheet\Entity'
+                alias: Timesheet
 
 when@test:
     doctrine:
