@@ -50,7 +50,7 @@ async function submit() {
         </h1>
         <p class="mt-4 max-w-sm text-[14px] leading-relaxed text-white/55">
           CRM, staffing, projets et facturation dans un seul outil,
-          pensé pour le quotidien d'un cabinet de conseil en cybersécurité.
+          piloté à la voix ou au clavier par l'assistant Synapse.
         </p>
       </div>
 
